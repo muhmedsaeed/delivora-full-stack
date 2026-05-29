@@ -1,0 +1,6 @@
+@Delivora_HostAddress = http://localhost:5101
+
+GET {{Delivora_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
