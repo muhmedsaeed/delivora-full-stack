@@ -1,14 +1,4 @@
 
-using Delivora.Models;
-using Delivora.Repositories.Data;
-using Delivora.Services.IService;
-using Delivora.Services.Service;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
 namespace Delivora;
 
 public class Program

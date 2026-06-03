@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Delivora.DTOs.Auth;
 
 public class RegisterDto

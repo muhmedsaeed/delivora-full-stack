@@ -1,4 +1,5 @@
-﻿namespace Delivora.DTOs.Auth;
+﻿
+namespace Delivora.DTOs.Auth;
 
 public class AuthResponseDto
 {

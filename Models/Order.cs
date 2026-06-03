@@ -1,7 +1,5 @@
 ﻿
 
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Delivora.Models;
 
 public class Order

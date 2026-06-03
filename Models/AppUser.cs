@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
+﻿
 namespace Delivora.Models;
 
 public class AppUser : IdentityUser<int>
