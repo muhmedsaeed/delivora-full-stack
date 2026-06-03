@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
 
-namespace Delivora.Repositories.Data;
 
+namespace Delivora.Repositories.Data;
 
 // Add-Migration init -o "Repositories/Data/Migrations"
 public class DeliveryContext : IdentityDbContext<AppUser, IdentityRole<int>, int>

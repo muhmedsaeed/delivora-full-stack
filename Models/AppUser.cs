@@ -10,7 +10,10 @@ public class AppUser : IdentityUser<int>
 
     public string? ProfileImageUrl { get; set; }
 
+    public DateTime BirthDate { get; set; }
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+
 
 
     // Relationships

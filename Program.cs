@@ -1,14 +1,19 @@
 
 using Delivora.Models;
 using Delivora.Repositories.Data;
+using Delivora.Services.IService;
+using Delivora.Services.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Delivora;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +26,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+
         // Configure the database connection string
         var connectionString = builder.Configuration.GetConnectionString("Delivery");
 
@@ -28,12 +34,61 @@ public class Program
             options.UseSqlServer(connectionString));
 
 
-        builder.Services.AddIdentity<AppUser, IdentityRole<int>>()
-            .AddEntityFrameworkStores<DeliveryContext>();
+        // Add Identity
+        builder.Services.AddIdentity<AppUser, IdentityRole<int>>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 8;
+                options.User.RequireUniqueEmail = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            })
+            .AddEntityFrameworkStores<DeliveryContext>()
+            .AddDefaultTokenProviders(); // for generating tokens for password reset, email confirmation, change email.
+        
+        // Add Jwt Authentication
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+                ClockSkew = TimeSpan.Zero // Remove default 5 minutes clock skew
+            };
+        });
+
+
+        // Add Services
+        builder.Services.AddScoped<ITokenService, TokenService>();
 
 
 
         var app = builder.Build();
+
+
+        // Seed roles
+        using (var scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+            foreach (var role in new[] { "Admin", "Customer", "Driver" })
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                    await roleManager.CreateAsync(new IdentityRole<int>(role));
+            }
+        }
+
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
