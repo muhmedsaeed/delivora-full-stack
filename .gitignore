@@ -1,24 +1,94 @@
-# Build folders
-bin/
-obj/
+# ============================================
+# .NET / ASP.NET Core
+# ============================================
+**/bin/
+**/obj/
+**/publish/
+**/*.user
+**/*.suo
+**/*.userosscache
+**/*.sln.docstates
+**/.vs/
+**/.idea/
+**/launchSettings.json
 
-# Visual Studio
-.vs/
-*.user
-*.suo
+# Entity Framework Migrations (optional - uncomment if you don't want to track)
+# **/Migrations/
 
-# Rider
-.idea/
+# Secrets & Config
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/*.pfx
+**/*.p12
+secrets.json
+**/secrets/
 
-# VS Code
-.vscode/
+# NuGet
+**/packages/
+**/*.nupkg
+**/project.lock.json
 
-# Logs
-*.log
+# ============================================
+# Angular / Node
+# ============================================
+angular-frontend/node_modules/
+angular-frontend/dist/
+angular-frontend/tmp/
+angular-frontend/out-tsc/
+angular-frontend/bazel-out/
+angular-frontend/.angular/
+angular-frontend/coverage/
+angular-frontend/.sass-cache/
+angular-frontend/connect.lock
+angular-frontend/libpeerconnection.log
+angular-frontend/testem.log
+angular-frontend/typings/
+angular-frontend/__screenshots__/
+npm-debug.log
+yarn-error.log
 
-# Publish output
-publish/
+# ============================================
+# IDEs & Editors
+# ============================================
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+.history/
+*.sublime-workspace
+*.sublime-project
+.c9/
+*.launch
+.settings/
+.classpath
+.project
 
-# OS files
+# ============================================
+# OS Files
+# ============================================
 .DS_Store
+.DS_Store?
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ============================================
+# Logs & Temp
+# ============================================
+*.log
+*.tmp
+*.temp
+/logs/
+
+# ============================================
+# Environment & Secrets
+# ============================================
+.env
+.env.local
+.env.development
+.env.production
+*.key
+*.pem
