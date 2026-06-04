@@ -1,5 +1,4 @@
 ﻿
-
 namespace Delivora.Controllers;
 
 [Route("api/[controller]")]
@@ -9,14 +8,15 @@ public class AuthController : ControllerBase
     private readonly UserManager<AppUser> _userManager;
     private readonly SignInManager<AppUser> _signInManager;
     private readonly ITokenService _tokenService;
-    private readonly DeliveryContext _context;
+    private readonly UnitOfWorks _unitOfWorks;
 
-    public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, DeliveryContext context)
+
+    public AuthController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService, UnitOfWorks unitOfWorks)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenService = tokenService;
-        _context = context;
+        _unitOfWorks = unitOfWorks;
     }
 
 
@@ -47,11 +47,12 @@ public class AuthController : ControllerBase
 
         await _userManager.AddToRoleAsync(user, "Customer");
 
-        _context.Customers.Add(new Customer { UserId = user.Id }); // Create associated Customer record
+
+        await _unitOfWorks.CustomerRepository.AddAsync(new Customer { UserId = user.Id }); // Create associated Customer record
 
         if (!string.IsNullOrWhiteSpace(dto.Street))
         {
-            _context.Addresses.Add(new Address
+            await _unitOfWorks.AddressRepository.AddAsync(new Address
             {
                 Title = dto.AddressTitle,
                 Street = dto.Street,
@@ -61,7 +62,7 @@ public class AuthController : ControllerBase
             });
         }
 
-        await _context.SaveChangesAsync();
+        await _unitOfWorks.SaveChangesAsync();
 
         var (token, expiresAt) = await _tokenService.GenerateTokenAsync(user);
 

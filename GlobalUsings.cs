@@ -31,6 +31,9 @@ global using Delivora.Services.IService;
 global using Delivora.Services.Service;
 
 global using Delivora.DTOs.Auth;
+global using Delivora.Repositories.Repository;
+
+global using Delivora.Repositories.UnitOfWorks;
 
 
 
