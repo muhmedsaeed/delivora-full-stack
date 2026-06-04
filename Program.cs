@@ -62,6 +62,7 @@ public class Program
 
         // Add Services
         builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<UnitOfWorks>();
 
 
 
