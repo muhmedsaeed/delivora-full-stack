@@ -63,6 +63,7 @@ public class Program
         // Add Services
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<UnitOfWorks>();
+        builder.Services.AddScoped<IFileService, FileService>();
 
 
 
@@ -96,7 +97,7 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-
+        app.UseStaticFiles();
         app.MapControllers();
 
         app.Run();

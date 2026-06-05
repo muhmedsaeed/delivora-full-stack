@@ -24,4 +24,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.1.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\CategoryDtos\" />
+    <Folder Include="wwwroot\Images\Foods\" />
+    <Folder Include="wwwroot\Images\Categories\" />
+  </ItemGroup>
+
 </Project>

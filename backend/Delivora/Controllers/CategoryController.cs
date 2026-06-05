@@ -1,7 +1,4 @@
 ﻿
-using Delivora.DTOs;
-using Microsoft.AspNetCore.Authorization;
-
 namespace Delivora.Controllers;
 
 
@@ -11,9 +8,12 @@ namespace Delivora.Controllers;
 public class CategoryController : ControllerBase
 {
     private readonly UnitOfWorks _unitOfWorks;
-    public CategoryController(UnitOfWorks unitOfWorks)
+    private readonly IFileService _fileService;
+
+    public CategoryController(UnitOfWorks unitOfWorks, IFileService fileService)
     {
         _unitOfWorks = unitOfWorks;
+        _fileService = fileService;
     }
 
 
@@ -22,24 +22,41 @@ public class CategoryController : ControllerBase
     public async Task<IActionResult> GetAllCategories()
     {
         var categories = await _unitOfWorks.CategoryRepository.GetAllAsync();
-        return Ok(categories);
+        
+        var categoryDtos = categories.Select(c => new CategoryDto
+        {
+            Name = c.Name,
+            Description = c.Description,
+            ImageUrl = c.ImageUrl,
+            FoodList = c.Foods.Select(f => f.Name).ToList()
+        }).ToList();
+
+        return Ok(categoryDtos);
     }
 
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCategoryById(int id)
     {
-        var category = await _unitOfWorks.CategoryRepository.GetByIdAsync(id);
+        Category? category = await _unitOfWorks.CategoryRepository.GetByIdAsync(id);
         if (category is null)
             return NotFound();
 
-        return Ok(category);
+        var categoryDto = new CategoryDto
+        {
+            Name = category.Name,
+            Description = category.Description,
+            ImageUrl = category.ImageUrl,
+            FoodList = category.Foods.Select(f => f.Name).ToList()
+        };
+
+        return Ok(categoryDto);
     }
 
 
     // Add Category
     [HttpPost]
-    public async Task<IActionResult> AddCategory([FromBody] CategoryDto dto)
+    public async Task<IActionResult> AddCategory([FromBody] CreateCategoryDto dto)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
@@ -47,28 +64,49 @@ public class CategoryController : ControllerBase
         var category = new Category
         {
             Name = dto.Name,
-            Description = dto.Description
+            Description = dto.Description,
+            ImageUrl = dto.Image is not null ? await _fileService.UploadFileAsync(dto.Image, "Images/Categories") : null
         };
 
         await _unitOfWorks.CategoryRepository.AddAsync(category);
         await _unitOfWorks._context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, category);
+
+        var categoryDto = new CategoryDto
+        {
+            Name = category.Name,
+            Description = category.Description,
+            ImageUrl = category.ImageUrl,
+            FoodList = new List<string>()
+        };
+
+        return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, categoryDto);
     }
 
 
     // Update Category
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryDto dto)
+    public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryDto dto)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
+
         var existingCategory = await _unitOfWorks.CategoryRepository.GetByIdAsync(id);
         if (existingCategory is null)
             return NotFound();
+
         existingCategory.Name = dto.Name;
         existingCategory.Description = dto.Description;
+        
+        if(dto.Image is not null)
+        {
+            if (!string.IsNullOrEmpty(existingCategory.ImageUrl)) // Delete the old image if it exists
+                await _fileService.DeleteFileAsync(existingCategory.ImageUrl);
+            existingCategory.ImageUrl = await _fileService.UploadFileAsync(dto.Image, "Images/Categories");
+        }
+
         await _unitOfWorks.CategoryRepository.UpdateAsync(existingCategory);
         await _unitOfWorks._context.SaveChangesAsync();
+
         return NoContent();
     }
 
@@ -80,6 +118,7 @@ public class CategoryController : ControllerBase
         var existingCategory = await _unitOfWorks.CategoryRepository.GetByIdAsync(id);
         if (existingCategory is null)
             return NotFound();
+
         await _unitOfWorks.CategoryRepository.DeleteAsync(existingCategory);
         await _unitOfWorks._context.SaveChangesAsync();
         return NoContent();

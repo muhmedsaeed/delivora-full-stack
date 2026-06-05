@@ -14,8 +14,8 @@ public class UnitOfWorks
     private DelivoraGenericRepository<Order>? _orderRepository;
     private DelivoraGenericRepository<OrderItem>? _orderItemsRepository;
 
-    private DelivoraGenericRepository<Food>? _foodRepository;
-    private DelivoraGenericRepository<Category>? _categoryRepository;
+    private FoodRepository? _foodRepository;
+    private CategoryRepository? _categoryRepository;
 
     private DelivoraGenericRepository<Payment>? _paymentRepository;
     private DelivoraGenericRepository<PaymentMethod>? _paymentMethodRepository;
@@ -118,7 +118,7 @@ public class UnitOfWorks
         {
             if (_foodRepository == null)
             {
-                _foodRepository = new DelivoraGenericRepository<Food>(_context);
+                _foodRepository = new FoodRepository(_context);
             }
             return _foodRepository;
         }
@@ -130,7 +130,7 @@ public class UnitOfWorks
         {
             if (_categoryRepository == null)
             {
-                _categoryRepository = new DelivoraGenericRepository<Category>(_context);
+                _categoryRepository = new CategoryRepository(_context);
             }
             return _categoryRepository;
         }

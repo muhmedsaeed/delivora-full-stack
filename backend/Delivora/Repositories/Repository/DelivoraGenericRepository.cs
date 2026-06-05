@@ -2,8 +2,8 @@
 
 public class DelivoraGenericRepository<TEntity> where TEntity : class
 {
-    private readonly DeliveryContext _context;
-    private readonly DbSet<TEntity> _dbSet;
+    protected readonly DeliveryContext _context;
+    protected readonly DbSet<TEntity> _dbSet;
 
     public DelivoraGenericRepository(DeliveryContext context)
     {
