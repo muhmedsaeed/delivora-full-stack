@@ -54,6 +54,26 @@ public class CategoryController : ControllerBase
     }
 
 
+    [HttpGet("{name:alpha}")]
+    public async Task<IActionResult> GetCategoryByName(string name)
+    {
+        Category? category = await _unitOfWorks.CategoryRepository.GetByNameAsync(name);
+        if (category is null)
+            return NotFound();
+
+        var categoryDto = new CategoryDto
+        {
+            Name = category.Name,
+            Description = category.Description,
+            ImageUrl = category.ImageUrl,
+            FoodList = category.Foods.Select(f => f.Name).ToList()
+        };
+
+        return Ok(categoryDto);
+    }
+
+
+
     // Add Category
     [HttpPost]
     public async Task<IActionResult> AddCategory([FromBody] CreateCategoryDto dto)
@@ -118,6 +138,12 @@ public class CategoryController : ControllerBase
         var existingCategory = await _unitOfWorks.CategoryRepository.GetByIdAsync(id);
         if (existingCategory is null)
             return NotFound();
+
+        // Delete the associated image if it exists
+        if (!string.IsNullOrEmpty(existingCategory.ImageUrl))
+        {
+            await _fileService.DeleteFileAsync(existingCategory.ImageUrl);
+        }
 
         await _unitOfWorks.CategoryRepository.DeleteAsync(existingCategory);
         await _unitOfWorks._context.SaveChangesAsync();

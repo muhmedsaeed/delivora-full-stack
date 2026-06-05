@@ -112,7 +112,7 @@ public class UnitOfWorks
 
 
 
-    public DelivoraGenericRepository<Food> FoodRepository
+    public FoodRepository FoodRepository
     {
         get
         {
@@ -124,7 +124,7 @@ public class UnitOfWorks
         }
     }
 
-    public DelivoraGenericRepository<Category> CategoryRepository
+    public CategoryRepository CategoryRepository
     {
         get
         {

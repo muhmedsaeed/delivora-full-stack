@@ -14,7 +14,7 @@ public class FoodRepository : DelivoraGenericRepository<Food>
     }
 
 
-    public async Task<Food?> GetFoodByNameAsync(string name)
+    public async Task<Food?> GetByNameAsync(string name)
     {
         return await _dbSet.FirstOrDefaultAsync(f => f.Name.ToLower() == name.ToLower());
 

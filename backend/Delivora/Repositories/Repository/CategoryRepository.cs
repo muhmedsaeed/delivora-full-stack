@@ -7,7 +7,7 @@ public class CategoryRepository : DelivoraGenericRepository<Category>
     }
 
 
-    public async Task<Category?> GetCategoryByNameAsync(string name)
+    public async Task<Category?> GetByNameAsync(string name)
     {
         return await _dbSet.FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
     }

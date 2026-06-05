@@ -31,7 +31,7 @@ public record CreateFoodDto
 
     public decimal Price { get; set; }
 
-    public IFormFile? ImageUrl { get; set; }
+    public IFormFile? Image { get; set; }
 
 
     public Boolean IsAvailable { get; set; }
@@ -55,6 +55,6 @@ public record UpdateFoodDto
 
     public int CategoryId { get; set; }
 
-    public IFormFile? ImageUrl { get; set; }
+    public IFormFile? Image { get; set; }
 
 }
