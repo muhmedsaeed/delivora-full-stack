@@ -21,6 +21,17 @@ public class FoodRepository : DelivoraGenericRepository<Food>
     }
 
 
+    public async Task<IEnumerable<Food>> GetAllWithCategoryAsync()
+    {
+        return await _dbSet.Include(f => f.Category).ToListAsync();
+    }
+
+
+    public async Task<Food?> GetByIdWithCategoryAsync(int id)
+    {
+        return await _dbSet.Include(f => f.Category)
+        .FirstOrDefaultAsync(f => f.Id == id);
+    }
 
 
 }

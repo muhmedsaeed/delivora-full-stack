@@ -224,18 +224,16 @@ public class FoodController : ControllerBase
     }
 
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteFood(int id)
     {
         var food = await _unitOfWorks.FoodRepository.GetByIdAsync(id);
         if (food is null)
             return NotFound($"Food with ID '{id}' not found.");
-        
-        // Delete the associated image if it exists
+
         if (!string.IsNullOrEmpty(food.ImageUrl))
-        {
             await _fileService.DeleteFileAsync(food.ImageUrl);
-        }
+
         await _unitOfWorks.FoodRepository.DeleteAsync(food);
         await _unitOfWorks.SaveChangesAsync();
         return NoContent();

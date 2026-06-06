@@ -11,4 +11,12 @@ public class CategoryRepository : DelivoraGenericRepository<Category>
     {
         return await _dbSet.FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower());
     }
+
+
+    public async Task<IEnumerable<Category>> GetAllWithFoodsAsync()
+    {
+        return await _dbSet.Include(c => c.Foods).ToListAsync();
+    }
+
+
 }
