@@ -9,7 +9,7 @@ public class UnitOfWorks
     private DelivoraGenericRepository<Customer>? _customerRepository;
     private DelivoraGenericRepository<Driver>? _driverRepository;
 
-    private DelivoraGenericRepository<Address>? _addressRepository;
+    private AddressRepository? _addressRepository;
 
     private OrderRepository? _orderRepository;
     private DelivoraGenericRepository<OrderItem>? _orderItemsRepository;
@@ -71,13 +71,13 @@ public class UnitOfWorks
     #endregion
 
 
-    public DelivoraGenericRepository<Address> AddressRepository
+    public AddressRepository AddressRepository
     {
         get
         {
             if (_addressRepository == null)
             {
-                _addressRepository = new DelivoraGenericRepository<Address>(_context);
+                _addressRepository = new AddressRepository(_context);
             }
             return _addressRepository;
         }
