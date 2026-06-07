@@ -47,7 +47,7 @@ public class Order
 
 
 
-    public int DriverId { get; set; }
+    public int? DriverId { get; set; }
 
     [ForeignKey(nameof(DriverId))]
     public Driver Driver { get; set; } = null!;
