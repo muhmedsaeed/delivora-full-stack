@@ -11,7 +11,7 @@ public class UnitOfWorks
 
     private DelivoraGenericRepository<Address>? _addressRepository;
 
-    private DelivoraGenericRepository<Order>? _orderRepository;
+    private OrderRepository? _orderRepository;
     private DelivoraGenericRepository<OrderItem>? _orderItemsRepository;
 
     private FoodRepository? _foodRepository;
@@ -85,13 +85,13 @@ public class UnitOfWorks
 
 
 
-    public DelivoraGenericRepository<Order> OrderRepository
+    public OrderRepository OrderRepository
     {
         get
         {
             if (_orderRepository == null)
             {
-                _orderRepository = new DelivoraGenericRepository<Order>(_context);
+                _orderRepository = new OrderRepository(_context);
             }
             return _orderRepository;
         }
