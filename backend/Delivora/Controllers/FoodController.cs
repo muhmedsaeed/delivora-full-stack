@@ -8,10 +8,12 @@ public class FoodController : ControllerBase
 {
     private readonly UnitOfWorks _unitOfWorks;
     private readonly IFileService _fileService;
-    public FoodController(UnitOfWorks unitOfWorks, IFileService fileService)
+    private readonly IMapper _map;
+    public FoodController(UnitOfWorks unitOfWorks, IFileService fileService, IMapper map)
     {
         _unitOfWorks = unitOfWorks;
         _fileService = fileService;
+        _map = map;
     }
 
 
@@ -20,19 +22,8 @@ public class FoodController : ControllerBase
     public async Task<IActionResult> GetAllFoods()
     {
         var foods = await _unitOfWorks.FoodRepository.GetAllAsync();
-
-        var foodDtos = foods.Select(f => new FoodDto
-        {
-            Id = f.Id,
-            Name = f.Name,
-            Description = f.Description,
-            Price = f.Price,
-            IsAvailable = f.IsAvailable,
-            ImageUrl = f.ImageUrl,
-            CategoryId = f.CategoryId,
-            CategoryName = f.Category.Name
-        }).ToList();
-        return Ok(foodDtos);
+        
+        return Ok(_map.Map<List<FoodDto>>(foods));
     }
 
 
@@ -43,19 +34,7 @@ public class FoodController : ControllerBase
         if (food is null)
             return NotFound($"Food with ID '{id}' not found.");
 
-        var foodDto = new FoodDto
-        {
-            Id = food.Id,
-            Name = food.Name,
-            Description = food.Description,
-            Price = food.Price,
-            IsAvailable = food.IsAvailable,
-            ImageUrl = food.ImageUrl,
-            CategoryId = food.CategoryId,
-            CategoryName = food.Category.Name
-        };
-
-        return Ok(foodDto);
+        return Ok(_map.Map<FoodDto>(food));
     }
 
 
@@ -66,19 +45,8 @@ public class FoodController : ControllerBase
         if (food is null)
             return NotFound($"Food with name '{name}' not found.");
 
-        var foodDto = new FoodDto
-        {
-            Id = food.Id,
-            Name = food.Name,
-            Description = food.Description,
-            Price = food.Price,
-            IsAvailable = food.IsAvailable,
-            ImageUrl = food.ImageUrl,
-            CategoryId = food.CategoryId,
-            CategoryName = food.Category.Name
-        };
+        return Ok(_map.Map<FoodDto>(food));
 
-        return Ok(foodDto);
     }
 
 
@@ -87,19 +55,7 @@ public class FoodController : ControllerBase
     {
         var foods = await _unitOfWorks.FoodRepository.GetFoodsByCategoryIdAsync(categoryId);
 
-        var foodDtos = foods.Select(f => new FoodDto
-        {
-            Id = f.Id,
-            Name = f.Name,
-            Description = f.Description,
-            Price = f.Price,
-            IsAvailable = f.IsAvailable,
-            ImageUrl = f.ImageUrl,
-            CategoryId = f.CategoryId,
-            CategoryName = f.Category.Name
-        }).ToList();
-
-        return Ok(foodDtos);
+        return Ok(_map.Map<List<FoodDto>>(foods));
     }
 
 
@@ -111,23 +67,13 @@ public class FoodController : ControllerBase
             return NotFound($"Category with name '{categoryName}' not found.");
 
         var foods = await _unitOfWorks.FoodRepository.GetFoodsByCategoryIdAsync(category.Id);
-        var foodDtos = foods.Select(f => new FoodDto
-        {
-            Id = f.Id,
-            Name = f.Name,
-            Description = f.Description,
-            Price = f.Price,
-            IsAvailable = f.IsAvailable,
-            ImageUrl = f.ImageUrl,
-            CategoryId = f.CategoryId,
-            CategoryName = f.Category.Name
-        }).ToList();
-        return Ok(foodDtos);
+        
+        return Ok(_map.Map<List<FoodDto>>(foods));
     }
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateFood([FromBody] CreateFoodDto foodDto)
+    public async Task<IActionResult> CreateFood([FromForm] CreateFoodDto foodDto)
     {
         // Implementation for creating a new food item
         var category = await _unitOfWorks.CategoryRepository.GetByIdAsync(foodDto.CategoryId);
@@ -142,39 +88,20 @@ public class FoodController : ControllerBase
         }
 
         // Create new Food entity
-        var food = new Food
-        {
-            Name = foodDto.Name,
-            Description = foodDto.Description,
-            Price = foodDto.Price,
-            IsAvailable = foodDto.IsAvailable,
-            ImageUrl = imageUrl,
-            CategoryId = foodDto.CategoryId
-        };
+         var food = _map.Map<Food>(foodDto);
+        food.ImageUrl = imageUrl;
 
         await _unitOfWorks.FoodRepository.AddAsync(food);
         await _unitOfWorks.SaveChangesAsync();
 
-        // Map the created Food entity to FoodDto for response        
-        var createdFoodDto = new FoodDto
-        {
-            Id = food.Id,
-            Name = food.Name,
-            Description = food.Description,
-            Price = food.Price,
-            IsAvailable = food.IsAvailable,
-            ImageUrl = food.ImageUrl,
-            CategoryId = food.CategoryId,
-            CategoryName = category.Name
-        };
-
-        return CreatedAtAction(nameof(GetFoodById), new { id = food.Id }, createdFoodDto);
+        return CreatedAtAction(nameof(GetFoodById), 
+                                new { id = food.Id }, _map.Map<FoodDto>(food));
     }
 
 
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateFood(int id, [FromBody] UpdateFoodDto foodDto)
+    public async Task<IActionResult> UpdateFood(int id, [FromForm] UpdateFoodDto foodDto)
     {
         var food = await _unitOfWorks.FoodRepository.GetByIdAsync(id);
         if (food is null)
@@ -207,20 +134,7 @@ public class FoodController : ControllerBase
 
         await _unitOfWorks.SaveChangesAsync();
 
-        // Map the updated Food entity to FoodDto for response
-        var updatedFoodDto = new FoodDto
-        {
-            Id = food.Id,
-            Name = food.Name,
-            Description = food.Description,
-            Price = food.Price,
-            IsAvailable = food.IsAvailable,
-            ImageUrl = food.ImageUrl,
-            CategoryId = food.CategoryId,
-            CategoryName = food.Category.Name
-        };
-
-        return Ok(updatedFoodDto);
+        return Ok(_map.Map<FoodDto>(food));
     }
 
 
@@ -228,9 +142,11 @@ public class FoodController : ControllerBase
     public async Task<IActionResult> DeleteFood(int id)
     {
         var food = await _unitOfWorks.FoodRepository.GetByIdAsync(id);
+        
         if (food is null)
             return NotFound($"Food with ID '{id}' not found.");
 
+        
         if (!string.IsNullOrEmpty(food.ImageUrl))
             await _fileService.DeleteFileAsync(food.ImageUrl);
 

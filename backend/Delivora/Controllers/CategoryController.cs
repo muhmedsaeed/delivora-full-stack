@@ -9,11 +9,13 @@ public class CategoryController : ControllerBase
 {
     private readonly UnitOfWorks _unitOfWorks;
     private readonly IFileService _fileService;
+    private readonly IMapper _map;
 
-    public CategoryController(UnitOfWorks unitOfWorks, IFileService fileService)
+    public CategoryController(UnitOfWorks unitOfWorks, IFileService fileService, IMapper map)
     {
         _unitOfWorks = unitOfWorks;
         _fileService = fileService;
+        _map = map;
     }
 
 
@@ -22,16 +24,9 @@ public class CategoryController : ControllerBase
     public async Task<IActionResult> GetAllCategories()
     {
         var categories = await _unitOfWorks.CategoryRepository.GetAllAsync();
-        
-        var categoryDtos = categories.Select(c => new CategoryDto
-        {
-            Name = c.Name,
-            Description = c.Description,
-            ImageUrl = c.ImageUrl,
-            FoodList = c.Foods.Select(f => f.Name).ToList()
-        }).ToList();
 
-        return Ok(categoryDtos);
+
+        return Ok(_map.Map<List<CategoryDto>>(categories));
     }
 
 
@@ -42,15 +37,7 @@ public class CategoryController : ControllerBase
         if (category is null)
             return NotFound();
 
-        var categoryDto = new CategoryDto
-        {
-            Name = category.Name,
-            Description = category.Description,
-            ImageUrl = category.ImageUrl,
-            FoodList = category.Foods.Select(f => f.Name).ToList()
-        };
-
-        return Ok(categoryDto);
+        return Ok(_map.Map<CategoryDto>(category));
     }
 
 
@@ -61,43 +48,28 @@ public class CategoryController : ControllerBase
         if (category is null)
             return NotFound();
 
-        var categoryDto = new CategoryDto
-        {
-            Name = category.Name,
-            Description = category.Description,
-            ImageUrl = category.ImageUrl,
-            FoodList = category.Foods.Select(f => f.Name).ToList()
-        };
-
-        return Ok(categoryDto);
+        return Ok(_map.Map<CategoryDto>(category));
     }
 
 
 
     // Add Category
     [HttpPost]
-    public async Task<IActionResult> AddCategory([FromBody] CreateCategoryDto dto)
+    public async Task<IActionResult> AddCategory([FromForm] CreateCategoryDto dto)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);
 
-        var category = new Category
-        {
-            Name = dto.Name,
-            Description = dto.Description,
-            ImageUrl = dto.Image is not null ? await _fileService.UploadFileAsync(dto.Image, "Images/Categories") : null
-        };
+
+        var category = _map.Map<Category>(dto);
+        
+        category.ImageUrl = dto.Image is not null ? await _fileService.UploadFileAsync(dto.Image, "Images/Categories") : null;
+
 
         await _unitOfWorks.CategoryRepository.AddAsync(category);
         await _unitOfWorks._context.SaveChangesAsync();
 
-        var categoryDto = new CategoryDto
-        {
-            Name = category.Name,
-            Description = category.Description,
-            ImageUrl = category.ImageUrl,
-            FoodList = new List<string>()
-        };
+        var categoryDto = _map.Map<CategoryDto>(category);
 
         return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, categoryDto);
     }
@@ -105,7 +77,7 @@ public class CategoryController : ControllerBase
 
     // Update Category
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryDto dto)
+    public async Task<IActionResult> UpdateCategory(int id, [FromForm] UpdateCategoryDto dto)
     {
         if (!ModelState.IsValid)
             return ValidationProblem(ModelState);

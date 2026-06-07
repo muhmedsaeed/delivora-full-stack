@@ -1,4 +1,6 @@
 
+using Delivora.Mappings;
+
 namespace Delivora;
 
 public class Program
@@ -64,6 +66,8 @@ public class Program
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<UnitOfWorks>();
         builder.Services.AddScoped<IFileService, FileService>();
+
+        builder.Services.AddAutoMapper(op => op.AddProfile<MappingProfile>());
 
 
 
