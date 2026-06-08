@@ -110,4 +110,57 @@ public class AuthController : ControllerBase
             Roles = await _userManager.GetRolesAsync(user)
         });
     }
+
+
+
+
+    // api/auth/register-driver
+    [HttpPost("register-driver")]
+    public async Task<IActionResult> RegisterDriver([FromBody] RegisterDriverDto dto)
+    {
+        if (!ModelState.IsValid)
+            return ValidationProblem(ModelState);
+
+        var user = new AppUser
+        {
+            UserName = dto.Username,
+            FullName = dto.FullName,
+            Email = dto.Email,
+            PhoneNumber = dto.PhoneNumber,
+            Status = UserStatus.Active,
+        };
+
+        var result = await _userManager.CreateAsync(user, dto.Password);
+        
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.Code, error.Description);
+            return ValidationProblem(ModelState);
+        }
+
+        await _userManager.AddToRoleAsync(user, "Driver");
+        await _unitOfWorks.DriverRepository.AddAsync(new Driver
+        {
+            UserId = user.Id,
+            VehicleType = dto.VehicleType,
+            LicenseNumber = dto.LicenseNumber,
+            IsAvailable = true
+        });
+        await _unitOfWorks.SaveChangesAsync();
+        
+        var (token, expiresAt) = await _tokenService.GenerateTokenAsync(user);
+        
+        return Ok(new AuthResponseDto
+        {
+            Token = token,
+            ExpiresAt = expiresAt,
+            Username = user.UserName!,
+            Email = user.Email!,
+            FullName = user.FullName,
+            Roles = await _userManager.GetRolesAsync(user)
+        });
+    }
+
+
 }
