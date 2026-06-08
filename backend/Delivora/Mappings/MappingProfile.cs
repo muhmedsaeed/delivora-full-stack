@@ -72,6 +72,7 @@ public class MappingProfile : Profile
 
         // For PaymentMethod
         CreateMap<PaymentMethod, PaymentMethodDto>();
+        CreateMap<CreatePaymentMethodDto, PaymentMethod>();
 
 
         // For Order Reviews
