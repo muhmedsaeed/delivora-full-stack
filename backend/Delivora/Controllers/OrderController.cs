@@ -28,7 +28,7 @@ public class OrderController : ControllerBase
     }
 
     private bool IsAdmin() { 
-        return User.IsInRole("Admin"); 
+        return User.IsInRole("Admin");
     }
 
     private bool IsDriver() {
