@@ -4,7 +4,6 @@ namespace Delivora.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[AllowAnonymous]
 public class CategoryController : ControllerBase
 {
     private readonly UnitOfWorks _unitOfWorks;
@@ -55,6 +54,7 @@ public class CategoryController : ControllerBase
 
     // Add Category
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AddCategory([FromForm] CreateCategoryDto dto)
     {
         if (!ModelState.IsValid)
@@ -77,6 +77,7 @@ public class CategoryController : ControllerBase
 
     // Update Category
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateCategory(int id, [FromForm] UpdateCategoryDto dto)
     {
         if (!ModelState.IsValid)
@@ -105,6 +106,7 @@ public class CategoryController : ControllerBase
 
     // Delete Category
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteCategory(int id)
     {
         var existingCategory = await _unitOfWorks.CategoryRepository.GetByIdAsync(id);

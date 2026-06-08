@@ -73,6 +73,7 @@ public class FoodController : ControllerBase
 
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateFood([FromForm] CreateFoodDto foodDto)
     {
         // Implementation for creating a new food item
@@ -101,6 +102,7 @@ public class FoodController : ControllerBase
 
 
     [HttpPut("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateFood(int id, [FromForm] UpdateFoodDto foodDto)
     {
         var food = await _unitOfWorks.FoodRepository.GetByIdAsync(id);
@@ -139,6 +141,7 @@ public class FoodController : ControllerBase
 
 
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteFood(int id)
     {
         var food = await _unitOfWorks.FoodRepository.GetByIdAsync(id);
