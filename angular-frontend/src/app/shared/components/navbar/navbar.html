@@ -1,0 +1,74 @@
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand fw-bold" routerLink="/">
+            🍕
+            Delivora</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact:true}">اﻟﺮﺋﯿﺴﯿﺔ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/menu" routerLinkActive="active">اﻟﻘﺎﺋﻤﺔ</a>
+                </li>
+                @if (auth.isCustomer()) {
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/orders" routerLinkActive="active">ﻃﻠﺒﺎﺗﻲ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/addresses" routerLinkActive="active">ﻋﻨﺎوﯾﻨﻲ</a>
+                </li>
+                }
+                @if (auth.isDriver()) {
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/driver" routerLinkActive="active">ﻟﻮﺣﺔ اﻟﺴﺎﺋﻖ</a>
+                </li>
+                }
+                @if (auth.isAdmin()) {
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/admin" routerLinkActive="active">ﻟﻮﺣﺔ اﻷدﻣﻦ</a>
+                </li>
+                }
+            </ul>
+            <ul class="navbar-nav">
+                @if (auth.isCustomer()) {
+                <li class="nav-item">
+                    <a class="nav-link position-relative" routerLink="/cart">
+
+                        �
+                        �اﻟﺴﻠﺔ
+
+                        @if (cart.totalItems() > 0) {
+                        <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+                            {{ cart.totalItems() }}
+                        </span>
+                        }
+                    </a>
+                </li>
+                }
+                @if (auth.isLoggedIn()) {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        {{ auth.user()?.fullName }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" (click)="auth.logout()">ﺗﺴﺠﯿﻞ اﻟﺨﺮوج</a></li>
+                    </ul>
+                </li>
+                } @else {
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/auth/login">دﺧﻮل</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/auth/register">ﺗﺴﺠﯿﻞ</a>
+                </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
