@@ -1,6 +1,5 @@
 
 using Delivora.Mappings;
-using Microsoft.Extensions.Options;
 
 namespace Delivora;
 
@@ -72,11 +71,10 @@ public class Program
 
 
         builder.Services.AddCors(options => {
-            options.AddPolicy("AllowFrontend", policy =>
+            options.AddPolicy("AllowAngular", policy =>
             policy.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials());
+            .AllowAnyMethod());
         });
         
 
@@ -106,7 +104,7 @@ public class Program
 
         app.UseHttpsRedirection();
 
-        app.UseCors("AllowFrontend");
+        app.UseCors("AllowAngular");
 
         app.UseAuthentication();
         app.UseAuthorization();
