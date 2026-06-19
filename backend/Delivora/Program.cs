@@ -1,5 +1,6 @@
 
 using Delivora.Mappings;
+using Microsoft.Extensions.Options;
 
 namespace Delivora;
 
@@ -70,6 +71,14 @@ public class Program
         builder.Services.AddAutoMapper(op => op.AddProfile<MappingProfile>());
 
 
+        builder.Services.AddCors(options => {
+            options.AddPolicy("AllowFrontend", policy =>
+            policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+        });
+        
 
         var app = builder.Build();
 
@@ -97,6 +106,7 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseCors("AllowFrontend");
 
         app.UseAuthentication();
         app.UseAuthorization();
