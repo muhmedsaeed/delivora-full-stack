@@ -164,10 +164,10 @@ public class OrderController : ControllerBase
         
         order.Status = dto.Status;
         
-        await _unitOfWorks.OrderRepository.UpdateAsync(order);
         await _unitOfWorks.SaveChangesAsync();
-        
-        return NoContent();
+
+        var updated = await _unitOfWorks.OrderRepository.GetByIdWithDetailsAsync(order.Id);
+        return Ok(_map.Map<OrderDto>(updated));
     }
 
 
@@ -189,10 +189,10 @@ public class OrderController : ControllerBase
         order.DriverId = dto.DriverId;
         order.Status = OrderStatus.Confirmed;
 
-        await _unitOfWorks.OrderRepository.UpdateAsync(order);
         await _unitOfWorks.SaveChangesAsync();
 
-        return NoContent();
+        var updated = await _unitOfWorks.OrderRepository.GetByIdWithDetailsAsync(order.Id);
+        return Ok(_map.Map<OrderDto>(updated));
     }
 
 
@@ -209,7 +209,7 @@ public class OrderController : ControllerBase
         if (!IsAdmin() && order.CustomerId != GetUserId())
             return Forbid();
         
-        if (order.Status == OrderStatus.Pending && !IsAdmin())
+        if (order.Status != OrderStatus.Pending && !IsAdmin())
             return BadRequest(new { message = "Cannot cancel." });
         
         

@@ -22,7 +22,7 @@ public class UnitOfWorks
 
 
     private DelivoraGenericRepository<OrderReview>? _orderReviewRepository;
-    private DelivoraGenericRepository<FoodReview>? _foodReviewRepository;
+    private FoodReviewRepository? _foodReviewRepository;
 
     
 
@@ -178,13 +178,13 @@ public class UnitOfWorks
         }
     }
 
-    public DelivoraGenericRepository<FoodReview> FoodReviewRepository
+    public FoodReviewRepository FoodReviewRepository
     {
         get
         {
             if (_foodReviewRepository == null)
             {
-                _foodReviewRepository = new DelivoraGenericRepository<FoodReview>(_context);
+                _foodReviewRepository = new FoodReviewRepository(_context);
             }
             return _foodReviewRepository;
         }

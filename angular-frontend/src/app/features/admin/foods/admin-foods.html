@@ -1,0 +1,116 @@
+@if (error) { <div class="alert alert-danger">{{ error }}</div> }
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-3">
+  <div>
+    <h3 class="mb-1">Food Management</h3>
+    <p class="text-secondary small mb-0">Manage menu items, pricing, and availability.</p>
+  </div>
+  <button class="btn btn-warning ms-auto" (click)="showForm ? closeForm() : startCreate()">
+    {{ showForm ? 'Cancel' : 'Add Food' }}
+  </button>
+</div>
+
+@if (showForm) {
+<div class="card border-secondary bg-dark mb-4">
+  <div class="card-body">
+    <h5 class="mb-4">{{ editingFood() ? 'Edit Food' : 'Add Food' }}</h5>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Name</label>
+          <input class="form-control" formControlName="name">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Category</label>
+          <select class="form-select" formControlName="categoryId">
+            <option [value]="0" disabled>Select category</option>
+            @for (cat of categories(); track cat.id) {
+            <option [value]="cat.id">{{ cat.name }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Price</label>
+          <input type="number" class="form-control" formControlName="price">
+        </div>
+        <div class="col-md-8">
+          <label class="form-label">Description</label>
+          <input class="form-control" formControlName="description">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Photo</label>
+          <input type="file" class="form-control" accept="image/*" (change)="onImageSelected($event)">
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+          <div class="form-check mb-0">
+            <input class="form-check-input" type="checkbox" formControlName="isAvailable" id="foodAvailable">
+            <label class="form-check-label" for="foodAvailable">Available</label>
+          </div>
+        </div>
+        @if (imagePreview) {
+        <div class="col-12 d-flex align-items-center gap-3">
+          <img [src]="imagePreview" alt="Food photo" class="rounded border"
+            style="width: 110px; height: 80px; object-fit: cover;">
+          @if (editingFood()) {
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="markImageForRemoval()">Remove
+            photo</button>
+          }
+        </div>
+        }
+        <div class="col-12">
+          <button class="btn btn-success" [disabled]="form.invalid">
+            {{ editingFood() ? 'Update' : 'Save' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+}
+
+<div class="card border-secondary bg-dark shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped mb-0 align-middle table-dark">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Available</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (food of foods(); track food.id) {
+          <tr>
+            <td>{{ food.id }}</td>
+            <td>
+              @if (food.imageUrl) {
+              <img [src]="food.imageUrl" [alt]="food.name" class="rounded border"
+                style="width: 64px; height: 48px; object-fit: cover;">
+              } @else {
+              <span class="text-muted small">No photo</span>
+              }
+            </td>
+            <td>{{ food.name }}</td>
+            <td>{{ food.categoryName }}</td>
+            <td>{{ food.price }} EGP</td>
+            <td>{{ food.isAvailable ? 'Yes' : 'No' }}</td>
+            <td class="text-center">
+              <button class="btn btn-sm btn-outline-warning me-2" (click)="startEdit(food)">Edit</button>
+              <button class="btn btn-sm btn-outline-danger" (click)="delete(food.id)">Delete</button>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="7" class="text-muted text-center">No foods yet.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

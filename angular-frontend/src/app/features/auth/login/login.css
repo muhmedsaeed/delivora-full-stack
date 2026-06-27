@@ -1,0 +1,118 @@
+.auth-wrapper {
+  min-height: calc(100vh - 75px);
+}
+
+.auth-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important;
+}
+
+.brand-pane {
+  background-image: url('/login_food_banner.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 550px;
+}
+
+.brand-pane .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(12, 15, 19, 0.95) 0%, rgba(20, 24, 31, 0.8) 50%, rgba(251, 133, 0, 0.3) 100%);
+  z-index: 0;
+}
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo {
+  font-size: 2.25rem;
+  filter: drop-shadow(0 0 8px rgba(255, 183, 3, 0.5));
+  animation: float 4s ease-in-out infinite;
+}
+
+.brand-name {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.brand-name::after {
+  content: '.';
+  color: var(--brand-primary);
+}
+
+.brand-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+  letter-spacing: -1px;
+}
+
+.brand-subtitle {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.form-pane {
+  background-color: var(--bg-dark-card);
+}
+
+.form-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.input-group-custom .position-relative {
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  pointer-events: none;
+  transition: var(--transition-smooth);
+}
+
+.form-control:focus ~ .input-icon {
+  color: var(--brand-primary);
+}
+
+.invalid-feedback {
+  font-size: 0.8rem;
+  color: #f25c54;
+}
+
+.is-invalid {
+  border-color: #f25c54 !important;
+}
+
+.is-invalid:focus {
+  box-shadow: 0 0 0 4px rgba(242, 92, 84, 0.15) !important;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+@media (max-width: 991px) {
+  .auth-wrapper {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+}

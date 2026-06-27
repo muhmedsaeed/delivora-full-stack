@@ -1,0 +1,48 @@
+<div class="container py-5">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+    <div>
+      <p class="mb-1 text-secondary small">DelivoraUI Admin</p>
+      <h2 class="mb-0">Admin Dashboard</h2>
+    </div>
+    <div class="text-md-end">
+      <p class="mb-0 text-secondary small">Manage orders, categories, drivers, and users from one place.</p>
+    </div>
+  </div>
+
+  <div class="card border-0 bg-transparent mb-4">
+    <div class="card-body p-0">
+      <ul class="nav nav-pills gap-2 flex-wrap">
+        <li class="nav-item">
+          <a class="nav-link px-3 py-2 text-warning border border-warning rounded-4" routerLink="/admin/orders"
+            routerLinkActive="active">Orders</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 py-2 text-warning border border-warning rounded-4" routerLink="/admin/categories"
+            routerLinkActive="active">Categories</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 py-2 text-warning border border-warning rounded-4" routerLink="/admin/foods"
+            routerLinkActive="active">Foods</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 py-2 text-warning border border-warning rounded-4" routerLink="/admin/payment-methods"
+            routerLinkActive="active">Payment Methods</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 py-2 text-warning border border-warning rounded-4" routerLink="/admin/drivers"
+            routerLinkActive="active">Drivers</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3 py-2 text-warning border border-warning rounded-4" routerLink="/admin/users"
+            routerLinkActive="active">Users</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card bg-dark border-secondary shadow-sm">
+    <div class="card-body p-4">
+      <router-outlet />
+    </div>
+  </div>
+</div>

@@ -9,12 +9,14 @@ namespace Delivora.Controllers;
 public class DriverController : ControllerBase
 {
     private readonly UnitOfWorks _unitOfWorks;
+    private readonly DeliveryContext _context;
     private readonly IMapper _mapper;
 
 
-    public DriverController(UnitOfWorks uow, IMapper mapper)
+    public DriverController(UnitOfWorks uow, DeliveryContext context, IMapper mapper)
     {
         _unitOfWorks = uow;
+        _context = context;
         _mapper = mapper;
     }
 
@@ -23,7 +25,9 @@ public class DriverController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAll()
     {
-        var drivers = await _unitOfWorks.DriverRepository.GetAllAsync();
+        var drivers = await _context.Drivers
+            .Include(d => d.User)
+            .ToListAsync();
 
         return Ok(_mapper.Map<List<DriverDto>>(drivers));
     }
@@ -33,9 +37,31 @@ public class DriverController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAvailable()
     {
-        var drivers = await _unitOfWorks.DriverRepository.GetAllAsync();
+        var drivers = await _context.Drivers
+            .Include(d => d.User)
+            .Where(d => d.IsAvailable && d.User.Status == UserStatus.Active)
+            .ToListAsync();
 
-        return Ok(_mapper.Map<List<DriverDto>>(drivers.Where(d => d.IsAvailable)));
+        return Ok(_mapper.Map<List<DriverDto>>(drivers));
+    }
+
+
+    [HttpPut("{id:int}/approve")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Approve(int id)
+    {
+        var driver = await _context.Drivers
+            .Include(d => d.User)
+            .FirstOrDefaultAsync(d => d.UserId == id);
+
+        if (driver is null) return NotFound();
+
+        driver.User.Status = UserStatus.Active;
+        driver.IsAvailable = true;
+
+        await _unitOfWorks.SaveChangesAsync();
+
+        return NoContent();
     }
 
 

@@ -8,6 +8,7 @@ public record DriverDto
     public string? Phone { get; set; }
     public string VehicleType { get; set; } = string.Empty;
     public string LicenseNumber { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
     public bool IsAvailable { get; set; }
     public decimal TotalEarnings { get; set; }
 }

@@ -1,0 +1,41 @@
+<div class="container py-4">
+    <h2 class="mb-4">Shopping Cart</h2>
+    @if (cart.cartItems().length === 0) {
+    <div class="alert alert-info">Your cart is empty. <a routerLink="/menu">Browse the menu</a></div>
+    } @else {
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of cart.cartItems(); track item.foodId) {
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.price }} EGP</td>
+                <td>
+                    <input type="number" class="form-control form-control-sm" style="width:70px" [value]="item.quantity"
+                        min="1" max="50" (change)="cart.updateQuantity(item.foodId, +$any($event.target).value)">
+                </td>
+                <td>{{ item.price * item.quantity }} EGP</td>
+                <td>
+                    <button class="btn btn-sm btn-danger" (click)="cart.removeItem(item.foodId)">Remove</button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <div class="text-end">
+        <p>Subtotal: {{ cart.subTotal() }} EGP</p>
+        <p>Delivery: {{ cart.deliveryFee }} EGP</p>
+        <p>Tax (14%): {{ cart.tax() }} EGP</p>
+        <h4>Total: {{ cart.total() }} EGP</h4>
+        <a routerLink="/checkout" class="btn btn-primary btn-lg">Checkout</a>
+    </div>
+    }
+</div>

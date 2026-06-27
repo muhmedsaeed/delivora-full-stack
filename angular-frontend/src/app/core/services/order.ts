@@ -16,10 +16,10 @@ export class OrderService {
         return this.http.post<Order>(this.url, dto);
     }
     updateStatus(id: number, status: OrderStatus) {
-        return this.http.put(`${this.url}/${id}/status`, { status });
+        return this.http.put<Order>(`${this.url}/${id}/status`, { status });
     }
     assignDriver(id: number, driverId: number) {
-        return this.http.put(`${this.url}/${id}/assign-driver`, { driverId });
+        return this.http.put<Order>(`${this.url}/${id}/assign-driver`, { driverId });
     }
     cancel(id: number) {
         return this.http.delete(`${this.url}/${id}`);

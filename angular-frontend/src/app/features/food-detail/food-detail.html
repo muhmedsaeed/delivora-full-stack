@@ -1,0 +1,90 @@
+<div class="container py-4">
+    @if (food(); as f) {
+    <div class="row g-4">
+        <div class="col-md-5">
+            @if (f.imageUrl) {
+            <img [src]="f.imageUrl" class="img-fluid rounded shadow-sm" [alt]="f.name">
+            } @else {
+            <div class="bg-light rounded d-flex align-items-center justify-content-center" style="height:300px;">
+                <span class="text-muted">No image available</span>
+            </div>
+            }
+        </div>
+        <div class="col-md-7">
+            <h2>{{ f.name }}</h2>
+            <p class="text-muted">{{ f.description }}</p>
+            <h4 class="text-warning mb-4">{{ f.price | currency:'EGP' }}</h4>
+
+            @if (auth.isCustomer()) {
+            <button class="btn btn-warning btn-lg" (click)="addToCart()">
+                Add to Cart
+            </button>
+            } @else if (!auth.isLoggedIn()) {
+            <a routerLink="/auth/login" class="btn btn-outline-warning btn-lg">
+                Login to Order
+            </a>
+            }
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <div class="row">
+        <div class="col-md-7">
+            <h4 class="mb-3">Reviews ({{ reviews().length }})</h4>
+
+            @if (reviews().length === 0) {
+            <p class="text-muted">No reviews yet. Be the first to review this item!</p>
+            } @else {
+            <div class="d-flex flex-column gap-3">
+                @for (review of reviews(); track review.id) {
+                <div class="border rounded p-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <strong class="text-white">{{ review.customerName }}</strong>
+                        <span class="text-warning">
+                            @for (star of [1,2,3,4,5]; track star) {
+                            <i [class]="star <= review.rating ? 'bi bi-star-fill' : 'bi bi-star'"></i>
+                            }
+                        </span>
+                    </div>
+                    @if (review.comment) {
+                    <p class="mb-0 text-muted">{{ review.comment }}</p>
+                    }
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        @if (auth.isCustomer()) {
+        <div class="col-md-5">
+            <h5 class="mb-3">Write a Review</h5>
+            <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+                <div class="mb-3">
+                    <label class="form-label">Rating</label>
+                    <select class="form-select" formControlName="rating">
+                        <option [value]="5">5 - Excellent</option>
+                        <option [value]="4">4 - Good</option>
+                        <option [value]="3">3 - Average</option>
+                        <option [value]="2">2 - Poor</option>
+                        <option [value]="1">1 - Terrible</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Comment</label>
+                    <textarea class="form-control" rows="3" formControlName="comment"
+                        placeholder="Share your thoughts about this dish..."></textarea>
+                </div>
+                <button class="btn btn-warning w-100" [disabled]="reviewForm.invalid">
+                    Submit Review
+                </button>
+            </form>
+        </div>
+        }
+    </div>
+    } @else {
+    <div class="text-center py-5">
+        <p class="text-muted">Loading...</p>
+    </div>
+    }
+</div>

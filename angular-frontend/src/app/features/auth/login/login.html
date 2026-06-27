@@ -1,26 +1,91 @@
-<div class="container py-5">
+<div class="auth-wrapper py-5 d-flex align-items-center justify-content-center">
+  <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card p-4 shadow-sm">
-                <h3 class="text-center mb-4">Login</h3>
-                @if (error) { <div class="alert alert-danger">{{ error }}</div> }
-                <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                    <div class="mb-3">
-                        <label class="form-label">Username</label>
-                        <input class="form-control" formControlName="username">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-control" formControlName="password">
-                    </div>
-                    <button class="btn btn-primary w-100" [disabled]="form.invalid || loading">
-                        {{ loading ? 'Logging in...' : 'Login' }}
-                    </button>
-                </form>
-                <p class="text-center mt-3">
-                    Don't have an account? <a routerLink="/auth/register">Sign up now</a>
-                </p>
+      <div class="col-xl-10">
+        <div class="card overflow-hidden auth-card">
+          <div class="row g-0">
+            <!-- Brand Banner Pane -->
+            <div class="col-lg-6 d-none d-lg-flex flex-column justify-content-between p-5 brand-pane position-relative">
+              <div class="overlay"></div>
+              <div class="brand-header position-relative z-1">
+                <span class="brand-logo">🍕</span>
+                <span class="brand-name fw-bold">Delivora</span>
+              </div>
+              <div class="brand-body position-relative z-1 mb-5">
+                <h1 class="brand-title mb-3">Satisfy Your Cravings Instantly</h1>
+                <p class="brand-subtitle">Order delicious hot meals from local restaurants and track your delivery in real-time.</p>
+              </div>
+              <div class="brand-footer position-relative z-1 text-muted">
+                © 2026 Delivora. All rights reserved.
+              </div>
             </div>
+            
+            <!-- Login Form Pane -->
+            <div class="col-lg-6 p-4 p-sm-5 d-flex flex-column justify-content-center form-pane">
+              <div class="form-header mb-4">
+                <h2 class="form-title">Welcome Back</h2>
+                <p class="text-secondary">Please enter your credentials to login</p>
+              </div>
+              
+              @if (error) { 
+                <div class="alert alert-danger d-flex align-items-center gap-2 border-0 bg-danger bg-opacity-10 text-danger" role="alert">
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                  <div>{{ error }}</div>
+                </div>
+              }
+              
+              <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+                <div class="mb-3 input-group-custom">
+                  <label class="form-label">Username</label>
+                  <div class="position-relative">
+                    <span class="input-icon"><i class="bi bi-person"></i></span>
+                    <input class="form-control ps-5" placeholder="Enter your username" formControlName="username"
+                      [class.is-invalid]="form.get('username')?.touched && form.get('username')?.invalid">
+                  </div>
+                </div>
+                
+                <div class="mb-4 input-group-custom">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <label class="form-label mb-0">Password</label>
+                  </div>
+                  <div class="position-relative">
+                    <span class="input-icon"><i class="bi bi-lock"></i></span>
+                    <input [type]="showPassword ? 'text' : 'password'" class="form-control ps-5 pe-5" placeholder="••••••••" formControlName="password"
+                      [class.is-invalid]="form.get('password')?.touched && form.get('password')?.invalid">
+                    <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-secondary pe-3 border-0 bg-transparent" (click)="togglePassword()">
+                      <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                    </button>
+                  </div>
+                  @if (form.get('password')?.touched && form.get('password')?.invalid) {
+                    <div class="invalid-feedback d-block mt-1">
+                      Password must be at least 8 characters with letters & numbers.
+                    </div>
+                  }
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 py-3 mb-4 d-flex align-items-center justify-content-center gap-2" [disabled]="form.invalid || loading">
+                  @if (loading) {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span>Logging in...</span>
+                  } @else {
+                    <span>Login</span>
+                    <i class="bi bi-arrow-right"></i>
+                  }
+                </button>
+              </form>
+              
+              <div class="text-center mt-2">
+                <p class="text-secondary mb-2">
+                  Don't have an account? <a routerLink="/auth/register" class="fw-semibold">Sign up now</a>
+                </p>
+                <p class="text-secondary mb-0">
+                  Applying as a driver? <a routerLink="/auth/register-driver" class="fw-semibold">Register as driver</a>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

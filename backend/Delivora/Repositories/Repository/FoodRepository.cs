@@ -10,7 +10,9 @@ public class FoodRepository : DelivoraGenericRepository<Food>
 
     public async Task<IEnumerable<Food>> GetFoodsByCategoryIdAsync(int categoryId)
     {
-        return await _dbSet.Where(f => f.CategoryId == categoryId).ToListAsync();
+        return await _dbSet.Include(f => f.Category)
+            .Where(f => f.CategoryId == categoryId)
+            .ToListAsync();
     }
 
 
@@ -18,6 +20,12 @@ public class FoodRepository : DelivoraGenericRepository<Food>
     {
         return await _dbSet.FirstOrDefaultAsync(f => f.Name.ToLower() == name.ToLower());
 
+    }
+
+    public async Task<Food?> GetByNameWithCategoryAsync(string name)
+    {
+        return await _dbSet.Include(f => f.Category)
+            .FirstOrDefaultAsync(f => f.Name.ToLower() == name.ToLower());
     }
 
 

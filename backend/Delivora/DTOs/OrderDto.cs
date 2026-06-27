@@ -11,6 +11,7 @@ public record OrderDto
     public DateTime CreatedAt { get; set; }
     public string Notes { get; set; } = string.Empty;
     public string CustomerName { get; set; } = string.Empty;
+    public int? DriverId { get; set; }
     public string DriverName { get; set; } = string.Empty;
     public string AddressTitle { get; set; } = string.Empty;
     public List<OrderItemDto> Items { get; set; } = new();

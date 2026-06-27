@@ -1,0 +1,56 @@
+<div class="container py-4">
+    <h2 class="mb-4">Checkout</h2>
+
+    @if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="placeOrder()">
+        <div class="row g-4">
+            <div class="col-md-7">
+                <div class="card p-3 mb-3">
+                    <h5 class="mb-3">Delivery Address</h5>
+                    <label class="form-label">Choose an address</label>
+                    <select class="form-select" formControlName="addressId">
+                        <option [value]="0" disabled>Select an address</option>
+                        @for (addr of addresses(); track addr.id) {
+                        <option [value]="addr.id">{{ addr.title }} - {{ addr.street }}, {{ addr.city }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="card p-3 mb-3">
+                    <h5 class="mb-3">Payment Method</h5>
+                    <label class="form-label">Choose a payment method</label>
+                    <select class="form-select" formControlName="paymentMethodId">
+                        <option [value]="0" disabled>Select a payment method</option>
+                        @for (method of paymentMethods(); track method.id) {
+                        <option [value]="method.id">{{ method.name }} - {{ method.description }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="card p-3">
+                    <h5 class="mb-3">Notes</h5>
+                    <textarea class="form-control" rows="3" formControlName="notes"
+                        placeholder="Any special instructions for your order..."></textarea>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card p-4">
+                    <h5 class="mb-3">Order Summary</h5>
+                    <p class="mb-1">Subtotal: {{ cart.subTotal() }} EGP</p>
+                    <p class="mb-1">Delivery: {{ cart.deliveryFee }} EGP</p>
+                    <p class="mb-3">Tax (14%): {{ cart.tax() }} EGP</p>
+                    <h4 class="mb-4">Total: {{ cart.total() }} EGP</h4>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100"
+                        [disabled]="loading || form.invalid || cart.cartItems().length === 0">
+                        {{ loading ? 'Placing order...' : 'Confirm Order' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

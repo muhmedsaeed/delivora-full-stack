@@ -57,4 +57,6 @@ public record UpdateFoodDto
 
     public IFormFile? Image { get; set; }
 
+    public bool RemoveImage { get; set; }
+
 }

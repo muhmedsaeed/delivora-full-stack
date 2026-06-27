@@ -8,7 +8,9 @@ public class MappingProfile : Profile
         // For Category
         CreateMap<Category, CategoryDto>()
             .ForMember(d => d.FoodList,
-                opt => opt.MapFrom(s => s.Foods.Select(f => f.Name).ToList()));
+                opt => opt.MapFrom(s => s.Foods.Select(f => f.Name).ToList()))
+            .ForMember(d => d.FoodCount,
+                opt => opt.MapFrom(s => s.Foods.ToList().Count));
         
         CreateMap<CreateCategoryDto, Category>()
             .ForMember(d => d.ImageUrl, opt => opt.Ignore())
@@ -53,7 +55,7 @@ public class MappingProfile : Profile
             .ForMember(d => d.CustomerName,
                 opt => opt.MapFrom(s => s.Customer.User.FullName))
             .ForMember(d => d.DriverName,
-                opt => opt.MapFrom(s => s.Driver!.User.FullName))
+                opt => opt.MapFrom(s => s.Driver == null ? string.Empty : s.Driver.User.FullName))
             .ForMember(d => d.AddressTitle,
                 opt => opt.MapFrom(s => s.Address.Title))
             .ForMember(d => d.Items,
@@ -109,7 +111,9 @@ public class MappingProfile : Profile
             .ForMember(d => d.Email,
                 opt => opt.MapFrom(s => s.User.Email))
             .ForMember(d => d.Phone,
-                opt => opt.MapFrom(s => s.User.PhoneNumber));
+                opt => opt.MapFrom(s => s.User.PhoneNumber))
+            .ForMember(d => d.Status,
+                opt => opt.MapFrom(s => s.User.Status.ToString()));
 
     }
 }

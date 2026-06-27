@@ -1,0 +1,63 @@
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">My Addresses</h2>
+        <button class="btn btn-primary" (click)="showForm ? cancelForm() : startCreate()">
+            {{ showForm ? 'Cancel' : '+ Add Address' }}
+        </button>
+    </div>
+
+    @if (error) { <div class="alert alert-danger">{{ error }}</div> }
+
+    @if (showForm) {
+    <div class="card p-4 mb-4">
+        <h5 class="mb-3">{{ editingId ? 'Edit Address' : 'New Address' }}</h5>
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Title</label>
+                    <input class="form-control" formControlName="title" placeholder="e.g. Home, Work">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">City</label>
+                    <input class="form-control" formControlName="city">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Street</label>
+                <input class="form-control" formControlName="street">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Country</label>
+                <input class="form-control" formControlName="country">
+            </div>
+            <button class="btn btn-primary" type="submit" [disabled]="form.invalid">
+                {{ editingId ? 'Update Address' : 'Save Address' }}
+            </button>
+        </form>
+    </div>
+    }
+
+    @if (addresses().length === 0) {
+    <p class="text-muted">You haven't added any addresses yet.</p>
+    } @else {
+    <div class="row g-3">
+        @for (addr of addresses(); track addr.id) {
+        <div class="col-md-6">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <strong>{{ addr.title }}</strong>
+                        <p class="mb-0 text-muted">{{ addr.street }}, {{ addr.city }}</p>
+                        <p class="mb-0 text-muted small">{{ addr.country }}</p>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <button class="btn btn-sm btn-outline-warning" (click)="startEdit(addr)">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="delete(addr.id)">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>

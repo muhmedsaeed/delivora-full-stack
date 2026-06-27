@@ -73,6 +73,8 @@ public class AuthController : ControllerBase
             Username = user.UserName!,
             Email = user.Email!,
             FullName = user.FullName,
+            Status = user.Status.ToString(),
+            ProfileImageUrl = user.ProfileImageUrl,
             Roles = await _userManager.GetRolesAsync(user)
         });
     }
@@ -89,6 +91,12 @@ public class AuthController : ControllerBase
         var user = await _userManager.FindByNameAsync(dto.Username);
         if (user is null)
             return Unauthorized(new { message = "Invalid username or password." });
+
+        if (user.Status == UserStatus.Pending)
+            return StatusCode(403, new { message = "Your account is pending admin approval." });
+
+        if (user.Status == UserStatus.Inactive)
+            return StatusCode(403, new { message = "Your account is not active." });
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, lockoutOnFailure: true);
 
@@ -107,6 +115,8 @@ public class AuthController : ControllerBase
             Username = user.UserName!,
             Email = user.Email!,
             FullName = user.FullName,
+            Status = user.Status.ToString(),
+            ProfileImageUrl = user.ProfileImageUrl,
             Roles = await _userManager.GetRolesAsync(user)
         });
     }
@@ -127,7 +137,7 @@ public class AuthController : ControllerBase
             FullName = dto.FullName,
             Email = dto.Email,
             PhoneNumber = dto.PhoneNumber,
-            Status = UserStatus.Active,
+            Status = UserStatus.Pending,
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
@@ -145,21 +155,11 @@ public class AuthController : ControllerBase
             UserId = user.Id,
             VehicleType = dto.VehicleType,
             LicenseNumber = dto.LicenseNumber,
-            IsAvailable = true
+            IsAvailable = false
         });
         await _unitOfWorks.SaveChangesAsync();
-        
-        var (token, expiresAt) = await _tokenService.GenerateTokenAsync(user);
-        
-        return Ok(new AuthResponseDto
-        {
-            Token = token,
-            ExpiresAt = expiresAt,
-            Username = user.UserName!,
-            Email = user.Email!,
-            FullName = user.FullName,
-            Roles = await _userManager.GetRolesAsync(user)
-        });
+
+        return Ok(new { message = "Driver registration submitted. Please wait for admin approval." });
     }
 
 

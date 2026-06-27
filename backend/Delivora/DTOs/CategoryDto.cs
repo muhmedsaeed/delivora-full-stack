@@ -2,6 +2,8 @@
 
 public record CategoryDto
 {
+    public int Id { get; set; }
+
     public string Name { get; set; } = string.Empty;
 
     public string? ImageUrl { get; set; } = string.Empty;
@@ -10,6 +12,7 @@ public record CategoryDto
 
     public List<string> FoodList { get; set; } = new List<string>();
 
+    public int FoodCount { get; set; }
 }
 
 
@@ -36,3 +39,4 @@ public record UpdateCategoryDto
     [StringLength(800)]
     public string Description { get; set; } = string.Empty;
 }
+

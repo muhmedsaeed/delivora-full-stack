@@ -1,0 +1,31 @@
+<div class="hero bg-dark text-white text-center py-5 mb-4">
+    <div class="container">
+        <h1 class="display-4">Order Your Favorite Food</h1>
+        <p class="lead">Fast delivery straight to your door</p>
+        <a routerLink="/menu" class="btn btn-primary btn-lg">Browse Menu</a>
+    </div>
+</div>
+<div class="container">
+    <h3 class="mb-3">Categories</h3>
+    <div class="row g-3 mb-5">
+        @for (cat of categories(); track cat.name) {
+        <div class="col-6 col-md-3">
+            <a [routerLink]="['/menu']" [queryParams]="{category: cat.name}"
+                class="card text-center text-decoration-none p-3">
+                @if (cat.imageUrl) {
+                <img [src]="cat.imageUrl" class="rounded mb-2" style="height:80px;object-fit:cover">
+                }
+                <strong>{{ cat.name }}</strong>
+            </a>
+        </div>
+        }
+    </div>
+    <h3 class="mb-3">Most Popular</h3>
+    <div class="row g-3">
+        @for (food of featuredFoods(); track food.id) {
+        <div class="col-md-4">
+            <app-food-card [food]="food" />
+        </div>
+        }
+    </div>
+</div>

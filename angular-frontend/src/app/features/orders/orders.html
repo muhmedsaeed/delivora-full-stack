@@ -1,0 +1,76 @@
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="fw-extrabold mb-1 text-white">My Orders</h1>
+      <p class="text-secondary mb-0">Track and view your past orders</p>
+    </div>
+    <span class="badge bg-dark border border-secondary text-secondary px-3 py-2 rounded-pill" style="font-size: 0.9rem;">
+      {{ orders().length }} {{ orders().length === 1 ? 'Order' : 'Orders' }}
+    </span>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      @for (order of orders(); track order.id) {
+        <div class="card mb-3 p-4 order-card">
+          <div class="row align-items-center g-3">
+            
+            <!-- Left: Icon & Order Info -->
+            <div class="col-md-7 d-flex align-items-center gap-3">
+              <div class="order-icon-wrapper d-none d-sm-flex align-items-center justify-content-center">
+                <i class="bi bi-receipt-cutoff fs-4 text-warning"></i>
+              </div>
+              <div>
+                <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                  <h5 class="mb-0 fw-bold text-white">Order #{{ order.id }}</h5>
+                  <span class="badge-status badge-status-{{ order.status.toLowerCase() }}">
+                    <span class="status-dot"></span>
+                    {{ order.status }}
+                  </span>
+                </div>
+                <div class="d-flex flex-column gap-1 text-secondary" style="font-size: 0.875rem;">
+                  <span class="d-flex align-items-center gap-1">
+                    <i class="bi bi-clock"></i> {{ order.createdAt | date:'medium' }}
+                  </span>
+                  @if (order.items && order.items.length) {
+                    <span class="d-flex align-items-center gap-1 text-muted">
+                      <i class="bi bi-bag"></i> 
+                      {{ order.items.length }} {{ order.items.length === 1 ? 'item' : 'items' }}:
+                      {{ order.items[0].foodName }} @if (order.items.length > 1) { and {{ order.items.length - 1 }} more }
+                    </span>
+                  } @else {
+                    <span class="d-flex align-items-center gap-1 text-muted">
+                      <i class="bi bi-geo-alt"></i> {{ order.addressTitle }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Pricing & Details button -->
+            <div class="col-md-5 d-flex justify-content-md-end align-items-center gap-4">
+              <div class="text-md-end">
+                <span class="text-muted block-label" style="font-size: 0.7rem;">TOTAL AMOUNT</span>
+                <h4 class="mb-0 fw-bold text-warning">{{ order.total | currency:'EGP':'symbol-narrow':'1.0-2' }}</h4>
+              </div>
+              <a [routerLink]="['/orders', order.id]" class="btn btn-outline-warning d-flex align-items-center gap-2 px-4 py-2 fw-semibold">
+                <span>Details</span>
+                <i class="bi bi-arrow-right-short fs-5"></i>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      } @empty {
+        <div class="card p-5 text-center my-5 bg-dark bg-opacity-20 border border-secondary border-dashed">
+          <div class="empty-icon-wrapper mb-3 mx-auto">
+            <i class="bi bi-emoji-frown fs-1 text-secondary"></i>
+          </div>
+          <h4 class="fw-bold text-white mb-2">No Orders Yet</h4>
+          <p class="text-secondary mb-4 mx-auto" style="max-width: 400px;">Looks like you haven't ordered any delicious food yet. Explore our menu and place your first order!</p>
+          <a routerLink="/menu" class="btn btn-primary px-4 py-2 mx-auto">Browse Menu</a>
+        </div>
+      }
+    </div>
+  </div>
+</div>

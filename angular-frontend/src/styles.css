@@ -1,1 +1,230 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --brand-primary: #ffb703;
+  --brand-primary-hover: #fb8500;
+  --brand-primary-glow: rgba(255, 183, 3, 0.15);
+  --brand-success: #2ec4b6;
+  --bg-dark-deep: #0c0f13;
+  --bg-dark-card: #14181f;
+  --bg-dark-input: #1d232c;
+  --border-dark: #262e3a;
+  --border-focus: #ffb703;
+  --text-primary: #f8f9fa;
+  --text-secondary: #9aa8b6;
+  --text-muted: #627588;
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  background-color: var(--bg-dark-deep);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-dark);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Premium Form Elements */
+.form-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  transition: var(--transition-smooth);
+}
+
+.form-control,
+.form-select {
+  background-color: var(--bg-dark-input) !important;
+  border: 1px solid var(--border-dark) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-family);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: var(--transition-smooth) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 4px var(--brand-primary-glow) !important;
+  outline: none;
+}
+
+.form-select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239aa8b6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 1rem center !important;
+  background-size: 16px 12px !important;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+}
+
+/* Custom Checkbox */
+.form-check-input {
+  background-color: var(--bg-dark-input);
+  border: 1px solid var(--border-dark);
+  transition: var(--transition-smooth);
+}
+
+.form-check-input:checked {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+
+.form-check-input:focus {
+  box-shadow: 0 0 0 4px var(--brand-primary-glow);
+  border-color: var(--brand-primary);
+}
+
+/* Custom Links */
+a {
+  color: var(--brand-primary);
+  text-decoration: none;
+  transition: var(--transition-smooth);
+}
+
+a:hover {
+  color: var(--brand-primary-hover);
+  text-decoration: none;
+}
+
+/* Global button overrides */
+.btn-primary {
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  color: #0c0f13 !important;
+  font-weight: 600;
+  padding: 0.50rem 1.5rem;
+  border-radius: 10px;
+  transition: var(--transition-smooth) !important;
+  border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--brand-primary-hover) !important;
+  border-color: var(--brand-primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(251, 133, 0, 0.3) !important;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background-color: #323d4b !important;
+  border-color: #323d4b !important;
+  color: #627588 !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Card Overrides */
+.card {
+  background-color: var(--bg-dark-card);
+  border: 1px solid var(--border-dark);
+  color: var(--text-primary);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Custom Muted Text */
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+
+/* Custom Badges */
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid transparent;
+}
+
+.badge-status-pending {
+  background-color: rgba(255, 183, 3, 0.1) !important;
+  color: #ffb703 !important;
+  border-color: rgba(255, 183, 3, 0.2) !important;
+}
+
+.badge-status-confirmed,
+.badge-status-preparing {
+  background-color: rgba(69, 182, 254, 0.1) !important;
+  color: #45b6fe !important;
+  border-color: rgba(69, 182, 254, 0.2) !important;
+}
+
+.badge-status-pickedup {
+  background-color: rgba(46, 196, 182, 0.1) !important;
+  color: #2ec4b6 !important;
+  border-color: rgba(46, 196, 182, 0.2) !important;
+}
+
+.badge-status-delivered {
+  background-color: rgba(46, 196, 182, 0.1) !important;
+  color: #2ec4b6 !important;
+  border-color: rgba(46, 196, 182, 0.2) !important;
+}
+
+.badge-status-cancelled {
+  background-color: rgba(242, 92, 84, 0.1) !important;
+  color: #f25c54 !important;
+  border-color: rgba(242, 92, 84, 0.2) !important;
+}
+
+/* Rating Stars */
+.rating-stars button {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.rating-stars button:hover {
+  transform: scale(1.25);
+}
+
+/* Order Details specific styling */
+.item-icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: rgba(255, 183, 3, 0.08);
+  border: 1px solid rgba(255, 183, 3, 0.15);
+  flex-shrink: 0;
+}
+
+.info-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-dark);
+  flex-shrink: 0;
+}

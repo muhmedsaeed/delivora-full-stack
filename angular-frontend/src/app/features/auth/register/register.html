@@ -1,75 +1,160 @@
-<div class="container py-5">
+<div class="auth-wrapper py-5 d-flex align-items-center justify-content-center">
+  <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-7">
-            <div class="card p-4 shadow-sm">
-                <h3 class="text-center mb-4">Create an Account</h3>
-                @if (error) { <div class="alert alert-danger">{{ error }}</div> }
-                <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Username</label>
-                            <input class="form-control" formControlName="username">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input class="form-control" formControlName="fullName">
-                        </div>
-                    </div>
+      <div class="col-lg-9 col-xl-8">
+        <div class="card p-4 p-sm-5 shadow-lg auth-card">
+          <!-- Card Header -->
+          <div class="text-center mb-4">
+            <div class="brand-logo mb-2">🍕</div>
+            <h2 class="form-title">Create an Account</h2>
+            <p class="text-secondary">Get started with Delivora today</p>
+          </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-control" formControlName="email">
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" class="form-control" formControlName="password">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" formControlName="passwordConfirmed">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Phone Number</label>
-                            <input class="form-control" formControlName="phoneNumber">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Birth Date</label>
-                            <input type="date" class="form-control" formControlName="birthDate">
-                        </div>
-                    </div>
-
-                    <hr class="my-3">
-                    <p class="text-muted mb-3">Delivery Address (optional)</p>
-
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Street</label>
-                            <input class="form-control" formControlName="street">
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">City</label>
-                            <input class="form-control" formControlName="city">
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Country</label>
-                        <input class="form-control" formControlName="country">
-                    </div>
-
-                    <button class="btn btn-primary w-100" [disabled]="form.invalid || loading">
-                        {{ loading ? 'Creating account...' : 'Sign Up' }}
-                    </button>
-                </form>
-                <p class="text-center mt-3">
-                    Already have an account? <a routerLink="/auth/login">Login here</a>
-                </p>
+          @if (error) { 
+            <div class="alert alert-danger d-flex align-items-center gap-2 border-0 bg-danger bg-opacity-10 text-danger mb-4" role="alert">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <div>{{ error }}</div>
             </div>
+          }
+
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+            <!-- Section 1: Personal Info -->
+            <div class="form-section-title d-flex align-items-center gap-2 mb-3">
+              <i class="bi bi-person-fill text-warning"></i>
+              <span class="fw-bold">Personal Information</span>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Username</label>
+                <div class="position-relative">
+                  <span class="input-icon"><i class="bi bi-person"></i></span>
+                  <input class="form-control ps-5" placeholder="johndoe" formControlName="username"
+                    [class.is-invalid]="form.get('username')?.touched && form.get('username')?.invalid">
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Full Name</label>
+                <div class="position-relative">
+                  <span class="input-icon"><i class="bi bi-card-text"></i></span>
+                  <input class="form-control ps-5" placeholder="John Doe" formControlName="fullName"
+                    [class.is-invalid]="form.get('fullName')?.touched && form.get('fullName')?.invalid">
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <div class="position-relative">
+                <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control ps-5" placeholder="name@example.com" formControlName="email"
+                  [class.is-invalid]="form.get('email')?.touched && form.get('email')?.invalid">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Phone Number</label>
+                <div class="position-relative">
+                  <span class="input-icon"><i class="bi bi-phone"></i></span>
+                  <input class="form-control ps-5" placeholder="e.g. +201234567890" formControlName="phoneNumber"
+                    [class.is-invalid]="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid">
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Birth Date</label>
+                <div class="position-relative">
+                  <span class="input-icon"><i class="bi bi-calendar"></i></span>
+                  <input type="date" class="form-control ps-5 text-secondary" formControlName="birthDate"
+                    [class.is-invalid]="form.get('birthDate')?.touched && form.get('birthDate')?.invalid">
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Security -->
+            <div class="form-section-title d-flex align-items-center gap-2 mt-4 mb-3">
+              <i class="bi bi-shield-lock-fill text-warning"></i>
+              <span class="fw-bold">Security</span>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Password</label>
+                <div class="position-relative">
+                  <span class="input-icon"><i class="bi bi-lock"></i></span>
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control ps-5 pe-5" placeholder="••••••••" formControlName="password"
+                    [class.is-invalid]="form.get('password')?.touched && form.get('password')?.invalid">
+                  <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-secondary pe-3 border-0 bg-transparent" (click)="togglePassword()">
+                    <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                  </button>
+                </div>
+                <div class="form-text text-muted" style="font-size: 0.75rem;">At least 8 characters with letters & numbers.</div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Confirm Password</label>
+                <div class="position-relative">
+                  <span class="input-icon"><i class="bi bi-lock-fill"></i></span>
+                  <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control ps-5 pe-5" placeholder="••••••••" formControlName="passwordConfirmed"
+                    [class.is-invalid]="form.get('passwordConfirmed')?.touched && form.get('passwordConfirmed')?.invalid">
+                  <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-secondary pe-3 border-0 bg-transparent" (click)="toggleConfirmPassword()">
+                    <i class="bi" [class.bi-eye]="!showConfirmPassword" [class.bi-eye-slash]="showConfirmPassword"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Optional Address -->
+            <div class="form-section-title d-flex align-items-center gap-2 mt-4 mb-3">
+              <i class="bi bi-geo-alt-fill text-warning"></i>
+              <span class="fw-bold">Delivery Address <span class="text-muted fw-normal" style="font-size: 0.8rem;">(Optional)</span></span>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Street Address</label>
+                <div class="position-relative">
+                  <span class="input-icon"><i class="bi bi-house"></i></span>
+                  <input class="form-control ps-5" placeholder="123 Main St" formControlName="street">
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">City</label>
+                <div class="position-relative">
+                  <span class="input-icon"><i class="bi bi-building"></i></span>
+                  <input class="form-control ps-5" placeholder="Cairo" formControlName="city">
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Country</label>
+              <div class="position-relative">
+                <span class="input-icon"><i class="bi bi-globe"></i></span>
+                <input class="form-control ps-5" placeholder="Egypt" formControlName="country">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-3 mb-4 d-flex align-items-center justify-content-center gap-2" [disabled]="form.invalid || loading">
+              @if (loading) {
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span>Creating account...</span>
+              } @else {
+                <span>Sign Up</span>
+                <i class="bi bi-person-plus"></i>
+              }
+            </button>
+          </form>
+
+          <div class="text-center">
+            <p class="text-secondary mb-2">
+              Already have an account? <a routerLink="/auth/login" class="fw-semibold">Login here</a>
+            </p>
+            <p class="text-secondary mb-0">
+              Want to deliver orders? <a routerLink="/auth/register-driver" class="fw-semibold">Register as driver</a>
+            </p>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

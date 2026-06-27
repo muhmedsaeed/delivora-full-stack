@@ -21,7 +21,7 @@ public class FoodController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllFoods()
     {
-        var foods = await _unitOfWorks.FoodRepository.GetAllAsync();
+        var foods = await _unitOfWorks.FoodRepository.GetAllWithCategoryAsync();
         
         return Ok(_map.Map<List<FoodDto>>(foods));
     }
@@ -30,7 +30,7 @@ public class FoodController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetFoodById(int id)
     {
-        Food? food = await _unitOfWorks.FoodRepository.GetByIdAsync(id);
+        Food? food = await _unitOfWorks.FoodRepository.GetByIdWithCategoryAsync(id);
         if (food is null)
             return NotFound($"Food with ID '{id}' not found.");
 
@@ -41,7 +41,7 @@ public class FoodController : ControllerBase
     [HttpGet("{name:alpha}")]
     public async Task<IActionResult> GetFoodByName(string name)
     {
-        Food? food = await _unitOfWorks.FoodRepository.GetByNameAsync(name);
+        Food? food = await _unitOfWorks.FoodRepository.GetByNameWithCategoryAsync(name);
         if (food is null)
             return NotFound($"Food with name '{name}' not found.");
 
@@ -59,7 +59,7 @@ public class FoodController : ControllerBase
     }
 
 
-    [HttpGet("bycategory/{categoryName:alpha}")]
+    [HttpGet("bycategory/{categoryName}")]
     public async Task<IActionResult> GetFoodsByCategoryName(string categoryName)
     {
         var category = await _unitOfWorks.CategoryRepository.GetByNameAsync(categoryName);
@@ -89,14 +89,17 @@ public class FoodController : ControllerBase
         }
 
         // Create new Food entity
-         var food = _map.Map<Food>(foodDto);
+        var food = _map.Map<Food>(foodDto);
+        food.CategoryId = category.Id;
         food.ImageUrl = imageUrl;
 
         await _unitOfWorks.FoodRepository.AddAsync(food);
         await _unitOfWorks.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetFoodById), 
-                                new { id = food.Id }, _map.Map<FoodDto>(food));
+        var created = await _unitOfWorks.FoodRepository.GetByIdWithCategoryAsync(food.Id);
+
+        return CreatedAtAction(nameof(GetFoodById),
+                                new { id = food.Id }, _map.Map<FoodDto>(created));
     }
 
 
@@ -116,12 +119,18 @@ public class FoodController : ControllerBase
         food.IsAvailable = foodDto.IsAvailable;
 
         var category = await _unitOfWorks.CategoryRepository.GetByIdAsync(foodDto.CategoryId);
-        if (category is not null)
-        {
-            food.CategoryId = foodDto.CategoryId;
-        }
+        if (category is null)
+            return NotFound($"Category with ID '{foodDto.CategoryId}' not found.");
+
+        food.CategoryId = foodDto.CategoryId;
 
         // Handle file upload if Image is provided
+        if (foodDto.RemoveImage && foodDto.Image is null && !string.IsNullOrEmpty(food.ImageUrl))
+        {
+            await _fileService.DeleteFileAsync(food.ImageUrl);
+            food.ImageUrl = null;
+        }
+
         if (foodDto.Image is not null)
         {
             // Delete the old image if it exists
@@ -136,7 +145,9 @@ public class FoodController : ControllerBase
 
         await _unitOfWorks.SaveChangesAsync();
 
-        return Ok(_map.Map<FoodDto>(food));
+        var updated = await _unitOfWorks.FoodRepository.GetByIdWithCategoryAsync(food.Id);
+
+        return Ok(_map.Map<FoodDto>(updated));
     }
 
 

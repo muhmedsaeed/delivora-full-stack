@@ -1,0 +1,66 @@
+@if (error) { <div class="alert alert-danger">{{ error }}</div> }
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-3">
+  <div>
+    <h3 class="mb-1">Order Management</h3>
+    <p class="text-secondary small mb-0">Track and assign orders with a clean admin view.</p>
+  </div>
+</div>
+
+<div class="card border-secondary bg-dark shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-striped align-middle mb-0 table-dark">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Driver</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders(); track order.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/orders', order.id]" class="fw-semibold">#{{ order.id }}</a>
+              <div class="small text-muted">{{ order.createdAt | date:'short' }}</div>
+            </td>
+            <td>{{ order.customerName }}</td>
+            <td>
+              <select class="form-select form-select-sm" [value]="order.status"
+                (change)="updateStatus(order.id, $any($event.target).value)">
+                @for (status of statuses; track status.label) {
+                @if (order.status == status.label) {
+                <option selected [value]="status.label">{{ status.label }}</option>
+                }
+                @else {<option [value]="status.label">{{ status.label }}</option>}
+                }
+              </select>
+            </td>
+            <td>{{ order.total }} EGP</td>
+            <td>{{ order.driverName || '—' }}</td>
+            <td>
+              <div class="d-flex gap-2 flex-wrap justify-content-end">
+                <select class="form-select form-select-sm" [(ngModel)]="selectedDriver[order.id]">
+                  <option [ngValue]="0">Assign driver</option>
+                  @for (driver of drivers(); track driver.userId) {
+                  <option [ngValue]="driver.userId">{{ driver.fullName }}</option>
+                  }
+                </select>
+                <button class="btn btn-sm btn-outline-warning" (click)="assignDriver(order.id)">Assign</button>
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="6" class="text-muted text-center">No orders yet.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

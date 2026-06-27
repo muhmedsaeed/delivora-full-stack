@@ -1,0 +1,291 @@
+<div class="container py-5">
+  <!-- Back button -->
+  <a routerLink="/orders"
+    class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 mb-4 px-3 py-2 fw-semibold"
+    style="border-radius: 8px;">
+    <i class="bi bi-arrow-left"></i>
+    <span>Back to Orders</span>
+  </a>
+
+  @if (loading()) {
+  <div class="text-center py-5">
+    <div class="spinner-border text-warning mb-3" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="text-secondary">Loading your order details...</p>
+  </div>
+  } @else if (error && !order()) {
+  <div class="alert alert-danger d-flex align-items-center gap-2 border-0 bg-danger bg-opacity-10 text-danger mb-4"
+    role="alert">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div>{{ error }}</div>
+  </div>
+  } @else if (order(); as o) {
+  @if (error) {
+  <div class="alert alert-danger d-flex align-items-center gap-2 border-0 bg-danger bg-opacity-10 text-danger mb-4"
+    role="alert">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div>{{ error }}</div>
+  </div>
+  }
+
+  <!-- Main Header Card -->
+  <div class="card p-4 mb-4 border-0 shadow-lg"
+    style="background: linear-gradient(135deg, var(--bg-dark-card) 0%, rgba(20, 24, 31, 0.7) 100%);">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <div>
+        <span class="text-muted block-label mb-1" style="font-size: 0.75rem;">ORDER PLACED</span>
+        <h2 class="mb-1 fw-bold text-white">Order #{{ o.id }}</h2>
+        <p class="text-secondary mb-0 small d-flex align-items-center gap-1">
+          <i class="bi bi-clock"></i> {{ o.createdAt | date:'medium' }}
+        </p>
+      </div>
+      <div class="text-end">
+        <span class="text-muted block-label mb-2" style="font-size: 0.75rem;">ORDER STATUS</span>
+        <span class="badge-status badge-status-{{ o.status.toLowerCase() }} fs-6 px-3 py-2">
+          <span class="status-dot"></span>
+          {{ o.status }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="row g-4">
+
+    <!-- Left Column: Items & Reviews -->
+    <div class="col-lg-7">
+
+      <!-- Items Card -->
+      <div class="card p-4 mb-4">
+        <h5 class="fw-bold text-white mb-4 d-flex align-items-center gap-2">
+          <i class="bi bi-bag-check text-warning"></i>
+          <span>Order Items</span>
+        </h5>
+
+        <div class="table-responsive">
+          <table class="table table-dark table-hover align-middle mb-0"
+            style="--bs-table-bg: transparent; --bs-table-hover-bg: rgba(255,255,255,0.02); border-color: var(--border-dark);">
+            <thead>
+              <tr class="text-muted" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+                <th>ITEM DETAILS</th>
+                <th class="text-center">QTY</th>
+                <th class="text-end">PRICE</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of o.items; track item.id) {
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="item-icon-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-egg-fried text-warning"></i>
+                    </div>
+                    <div>
+                      <p class="mb-0 fw-semibold text-white">{{ item.foodName }}</p>
+                      <small class="text-muted">{{ item.unitPrice | currency:'EGP':'symbol-narrow':'1.0-2' }}
+                        each</small>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center fw-semibold text-secondary">x{{ item.quantity }}</td>
+                <td class="text-end fw-bold text-warning">{{ item.totalPrice | currency:'EGP':'symbol-narrow':'1.0-2' }}
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Rating/Review Form Card -->
+      @if (canReview(o.status)) {
+      <div class="card p-4 mb-4">
+        <h5 class="fw-bold text-white mb-3 d-flex align-items-center gap-2">
+          <i class="bi bi-star-fill text-warning"></i>
+          <span>Rate Your Order</span>
+        </h5>
+        <p class="text-secondary small mb-4">How was your experience with Delivora? Please let us know.</p>
+
+        <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+          <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+              <label class="form-label d-block">Packaging Quality</label>
+              <div class="rating-stars d-flex gap-1">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                <button type="button" class="btn btn-link p-0 text-warning"
+                  (click)="reviewForm.get('packagingRate')?.setValue(star)">
+                  <i class="bi fs-4" [class.bi-star-fill]="packagingRate >= star"
+                    [class.bi-star]="packagingRate < star"></i>
+                </button>
+                }
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label d-block">Delivery Service</label>
+              <div class="rating-stars d-flex gap-1">
+                @for (star of [1, 2, 3, 4, 5]; track star) {
+                <button type="button" class="btn btn-link p-0 text-warning"
+                  (click)="reviewForm.get('deliveryRate')?.setValue(star)">
+                  <i class="bi fs-4" [class.bi-star-fill]="deliveryRate >= star"
+                    [class.bi-star]="deliveryRate < star"></i>
+                </button>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Review Comment</label>
+            <textarea class="form-control" rows="3" formControlName="comment"
+              placeholder="Optional comments about the food or delivery service..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary px-4 py-2" [disabled]="reviewForm.invalid">Submit Review</button>
+        </form>
+      </div>
+      }
+
+      <!-- Past Reviews Card -->
+      @if (reviews().length) {
+      <div class="card p-4">
+        <h5 class="fw-bold text-white mb-4 d-flex align-items-center gap-2">
+          <i class="bi bi-chat-left-text text-warning"></i>
+          <span>Reviews Timeline</span>
+        </h5>
+
+        <div class="timeline-container d-flex flex-column gap-3">
+          @for (review of reviews(); track review.id) {
+          <div class="p-3 border border-secondary border-opacity-20 rounded-3 bg-dark bg-opacity-20">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+              <strong class="text-white">{{ review.customerName }}</strong>
+              <div class="d-flex gap-3 text-secondary" style="font-size: 0.8rem;">
+                <span>Packaging: <span class="text-warning">★ {{ review.packagingRate }}/5</span></span>
+                <span>Delivery: <span class="text-warning">★ {{ review.deliveryRate }}/5</span></span>
+              </div>
+            </div>
+            @if (review.comment) {
+            <p class="mb-0 text-secondary mt-1" style="font-size: 0.9rem; line-height: 1.5;">{{ review.comment }}</p>
+            }
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+    </div>
+
+    <!-- Right Column: Summary & Info -->
+    <div class="col-lg-5">
+
+      <!-- Summary Receipt Card -->
+      <div class="card p-4 mb-4">
+        <h5 class="fw-bold text-white mb-4 d-flex align-items-center gap-2">
+          <i class="bi bi-receipt text-warning"></i>
+          <span>Bill Summary</span>
+        </h5>
+
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex justify-content-between text-secondary">
+            <span>Subtotal</span>
+            <span>{{ o.subTotal | currency:'EGP':'symbol-narrow':'1.0-2' }}</span>
+          </div>
+          <div class="d-flex justify-content-between text-secondary">
+            <span>Delivery Fee</span>
+            <span>{{ o.deliveryFee | currency:'EGP':'symbol-narrow':'1.0-2' }}</span>
+          </div>
+          <div class="d-flex justify-content-between text-secondary">
+            <span>Tax</span>
+            <span>{{ o.tax | currency:'EGP':'symbol-narrow':'1.0-2' }}</span>
+          </div>
+
+          <hr class="my-1 border-secondary">
+
+          <div class="d-flex justify-content-between align-items-center">
+            <span class="fw-bold text-white fs-5">Grand Total</span>
+            <span class="fw-extrabold text-warning fs-4">{{ o.total | currency:'EGP':'symbol-narrow':'1.0-2' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery details card -->
+      <div class="card p-4 mb-4">
+        <h5 class="fw-bold text-white mb-4 d-flex align-items-center gap-2">
+          <i class="bi bi-truck text-warning"></i>
+          <span>Delivery details</span>
+        </h5>
+
+        <div class="d-flex flex-column gap-4">
+
+          <!-- Customer -->
+          <div class="d-flex gap-3">
+            <div class="info-icon d-flex align-items-center justify-content-center">
+              <i class="bi bi-person text-secondary fs-5"></i>
+            </div>
+            <div>
+              <span class="text-muted block-label" style="font-size: 0.7rem;">CUSTOMER</span>
+              <span class="text-white fw-semibold">{{ o.customerName }}</span>
+            </div>
+          </div>
+
+          <!-- Driver -->
+          <div class="d-flex gap-3">
+            <div class="info-icon d-flex align-items-center justify-content-center">
+              <i class="bi bi-bicycle text-secondary fs-5"></i>
+            </div>
+            <div>
+              <span class="text-muted block-label" style="font-size: 0.7rem;">DELIVERY DRIVER</span>
+              @if (o.driverName) {
+              <span class="text-white fw-semibold">{{ o.driverName }}</span>
+              } @else {
+              <div class="d-flex align-items-center gap-2">
+                <span class="spinner-grow spinner-grow-sm text-warning" role="status" aria-hidden="true"
+                  style="width: 8px; height: 8px;"></span>
+                <span class="text-warning fw-semibold">Assigning a driver soon...</span>
+              </div>
+              }
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="d-flex gap-3">
+            <div class="info-icon d-flex align-items-center justify-content-center">
+              <i class="bi bi-geo-alt text-secondary fs-5"></i>
+            </div>
+            <div>
+              <span class="text-muted block-label" style="font-size: 0.7rem;">DELIVERY ADDRESS</span>
+              <span class="text-white fw-semibold">{{ o.addressTitle }}</span>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          @if (o.notes) {
+          <div class="d-flex gap-3">
+            <div class="info-icon d-flex align-items-center justify-content-center">
+              <i class="bi bi-chat-quote text-secondary fs-5"></i>
+            </div>
+            <div>
+              <span class="text-muted block-label" style="font-size: 0.7rem;">ORDER NOTES</span>
+              <span class="text-white bg-dark bg-opacity-30 p-2 rounded d-block mt-1"
+                style="font-size: 0.85rem; border: 1px solid var(--border-dark);">{{ o.notes }}</span>
+            </div>
+          </div>
+          }
+
+        </div>
+      </div>
+
+      <!-- Cancel Button -->
+      @if (canCancel(o.status)) {
+      <button class="btn btn-outline-danger w-100 py-3 d-flex align-items-center justify-content-center gap-2"
+        style="border-radius: 12px; font-weight: 600;" (click)="cancelOrder()">
+        <i class="bi bi-x-circle"></i>
+        <span>Cancel Order</span>
+      </button>
+      }
+
+    </div>
+
+  </div>
+  }
+</div>

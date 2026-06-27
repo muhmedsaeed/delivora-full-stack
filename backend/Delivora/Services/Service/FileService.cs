@@ -7,7 +7,10 @@ public class FileService : IFileService
     {
         var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}"; // Generate a unique file name to avoid conflicts
 
-        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderPath, fileName);
+        var directory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderPath);
+        Directory.CreateDirectory(directory);
+
+        var path = Path.Combine(directory, fileName);
 
         using (var stream = new FileStream(path, FileMode.Create)) // Create a new file stream to write the uploaded file
         {
@@ -20,9 +23,14 @@ public class FileService : IFileService
 
     public Task DeleteFileAsync(string filePath)
     {
-        if (File.Exists(filePath))
+        var relativePath = filePath.TrimStart('/', '\\')
+            .Replace('/', Path.DirectorySeparatorChar)
+            .Replace('\\', Path.DirectorySeparatorChar);
+        var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+        if (File.Exists(fullPath))
         {
-            File.Delete(filePath);
+            File.Delete(fullPath);
         }
 
         return Task.CompletedTask;

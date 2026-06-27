@@ -1,0 +1,100 @@
+@if (error) { <div class="alert alert-danger">{{ error }}</div> }
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-3">
+  <div>
+    <h3 class="mb-1">User Management</h3>
+    <p class="text-secondary small mb-0">Filter, review, and manage platform users.</p>
+  </div>
+  <div class="btn-group" role="group" aria-label="Role filters">
+    <button class="btn btn-sm" [class.btn-warning]="roleFilter === ''" [class.btn-outline-warning]="roleFilter !== ''"
+      (click)="load('')">All</button>
+    <button class="btn btn-sm" [class.btn-warning]="roleFilter === 'Customer'"
+      [class.btn-outline-warning]="roleFilter !== 'Customer'" (click)="load('Customer')">Customers</button>
+    <button class="btn btn-sm" [class.btn-warning]="roleFilter === 'Driver'"
+      [class.btn-outline-warning]="roleFilter !== 'Driver'" (click)="load('Driver')">Drivers</button>
+  </div>
+</div>
+
+<div class="card border-secondary bg-dark shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-dark align-middle mb-0">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Contact</th>
+            <th>Status</th>
+            <th>Details</th>
+            <th>Lock</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of users(); track user.id) {
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                @if (user.profileImageUrl) {
+                <img [src]="user.profileImageUrl" [alt]="user.fullName" class="rounded-circle border"
+                  style="width: 42px; height: 42px; object-fit: cover;">
+                }
+                <div>
+                  <strong>{{ user.fullName }}</strong>
+                  <div class="small text-muted">{{ user.username }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ user.roles.join(', ') }}</td>
+            <td>
+              <div>{{ user.email }}</div>
+              <div class="small text-muted">{{ user.phoneNumber || '-' }}</div>
+            </td>
+            <td>
+              <span class="badge" [class.text-bg-success]="user.status === 'Active'"
+                [class.text-bg-warning]="user.status === 'Suspended' || user.status === 'Pending'"
+                [class.text-bg-secondary]="user.status !== 'Active' && user.status !== 'Suspended' && user.status !== 'Pending'">{{
+                user.status }}</span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-secondary" (click)="showDetails(user)">View</button>
+            </td>
+            <td>
+              @if (user.status === 'Suspended') {
+              <button class="btn btn-sm btn-outline-success" (click)="unlock(user)">Unlock</button>
+              } @else {
+              <button class="btn btn-sm btn-outline-warning" (click)="lock(user)">Lock</button>
+              }
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="6" class="text-muted text-center">No users found.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+@if (selectedUser()) {
+<div class="card border-secondary bg-dark p-3 mt-3 shadow-sm">
+  <div class="d-flex justify-content-between align-items-start gap-3">
+    <div>
+      <h5 class="mb-1">{{ selectedUser()!.fullName }}</h5>
+      <div class="text-muted">{{ selectedUser()!.roles.join(', ') }} · {{ selectedUser()!.status }}</div>
+    </div>
+    <button class="btn btn-sm btn-outline-secondary" (click)="selectedUser.set(null)">Close</button>
+  </div>
+  <hr class="border-secondary">
+  <div class="row g-3">
+    <div class="col-md-6"><strong>Email:</strong> {{ selectedUser()!.email }}</div>
+    <div class="col-md-6"><strong>Phone:</strong> {{ selectedUser()!.phoneNumber || '-' }}</div>
+
+    @if (selectedUser()!.roles[0] === 'Driver') {
+    <div class="col-md-6"><strong>Vehicle:</strong> {{ selectedUser()!.vehicleType || '-' }}</div>
+    <div class="col-md-6"><strong>License:</strong> {{ selectedUser()!.licenseNumber || '-' }}</div>
+    }
+  </div>
+</div>
+}

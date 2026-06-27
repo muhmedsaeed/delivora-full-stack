@@ -298,7 +298,7 @@ namespace Delivora.Repositories.Data.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("DriverId")
+                    b.Property<int?>("DriverId")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
@@ -682,8 +682,7 @@ namespace Delivora.Repositories.Data.Migrations
                     b.HasOne("Delivora.Models.Driver", "Driver")
                         .WithMany("Orders")
                         .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Address");
 

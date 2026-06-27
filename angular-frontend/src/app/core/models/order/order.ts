@@ -11,6 +11,7 @@ export interface Order {
     createdAt: string;
     notes: string;
     customerName: string;
+    driverId?: number;
     driverName: string;
     addressTitle: string;
     items: OrderItem[];

@@ -1,0 +1,18 @@
+<div class="card h-100">
+    @if (food.imageUrl) {
+    <img [src]="food.imageUrl" class="card-img-top" [alt]="food.name" style="height:180px;object-fit:cover">
+    }
+    <div class="card-body d-flex flex-column">
+        <h5 class="card-title">{{ food.name }}</h5>
+        <p class="card-text text-muted small flex-grow-1">{{ food.description }}</p>
+        <div class="d-flex justify-content-between align-items-center mt-auto">
+            <span class="fw-bold text-warning">{{ food.price }} EGP</span>
+            <div>
+                <a [routerLink]="['/food', food.id]" class="btn btn-sm btn-outline-secondary me-1">Details</a>
+                @if (auth.isCustomer() && food.isAvailable) {
+                <button class="btn btn-sm btn-primary" (click)="addToCart()">Add</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

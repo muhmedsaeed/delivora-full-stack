@@ -20,7 +20,7 @@ public class FoodReviewController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetByFood(int foodId)
     {
-        var reviews = await _unitOfWorks.FoodReviewRepository.GetAllAsync();
+        var reviews = await _unitOfWorks.FoodReviewRepository.GetAllWithCustomerAsync();
 
         return Ok(_mapper.Map<List<FoodReviewDto>>(reviews.Where(r => r.FoodId == foodId)));
     }

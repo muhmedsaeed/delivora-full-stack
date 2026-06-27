@@ -1,0 +1,30 @@
+<div class="container py-4">
+    <h2 class="mb-4">Our Menu</h2>
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <button class="btn" [class.btn-warning]="selectedCategory() === null"
+            [class.btn-outline-warning]="selectedCategory() !== null" (click)="selectCategory(null)">
+            All
+        </button>
+        @for (cat of categories(); track cat.name) {
+        <button class="btn" [class.btn-warning]="selectedCategory() === cat.name"
+            [class.btn-outline-warning]="selectedCategory() !== cat.name" (click)="selectCategory(cat.name)">
+            {{ cat.name }}
+        </button>
+        }
+    </div>
+
+    @if (foods().length === 0) {
+    <div class="text-center text-muted py-5">
+        <p>No items found in this category.</p>
+    </div>
+    } @else {
+    <div class="row g-3">
+        @for (food of foods(); track food.id) {
+        <div class="col-md-4">
+            <app-food-card [food]="food" />
+        </div>
+        }
+    </div>
+    }
+</div>

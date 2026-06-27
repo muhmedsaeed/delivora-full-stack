@@ -12,6 +12,9 @@ export class DriverService {
 
     getAll() { return this.http.get<Driver[]>(this.url); }
     getAvailable() { return this.http.get<Driver[]>(`${this.url}/available`); }
+    approve(id: number) {
+        return this.http.put(`${this.url}/${id}/approve`, {});
+    }
     setAvailability(isAvailable: boolean) {
         return this.http.put(`${this.url}/availability`, isAvailable);
     }

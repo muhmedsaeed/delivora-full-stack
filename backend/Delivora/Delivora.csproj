@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Repositories\Data\Migrations\" />
     <Folder Include="wwwroot\Images\Foods\" />
     <Folder Include="wwwroot\Images\Categories\" />
   </ItemGroup>

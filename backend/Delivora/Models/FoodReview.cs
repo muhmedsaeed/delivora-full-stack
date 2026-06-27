@@ -23,7 +23,7 @@ public class FoodReview
     public int CustomerId { get; set; }
 
     [ForeignKey(nameof(CustomerId))]
-    public Customer Customer { get; set; } = null!;
+    public Customer Customer { get; set; }
 
 
 

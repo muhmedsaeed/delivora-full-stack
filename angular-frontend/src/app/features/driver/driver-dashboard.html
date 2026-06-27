@@ -1,0 +1,36 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Driver Dashboard</h2>
+    <button class="btn" [class]="isAvailable() ? 'btn-success' : 'btn-secondary'" (click)="toggleAvailability()">
+      {{ isAvailable() ? 'Available' : 'Unavailable' }}
+    </button>
+  </div>
+
+  @if (error) { <div class="alert alert-danger">{{ error }}</div> }
+
+  @for (order of orders(); track order.id) {
+  <div class="card mb-3 p-3">
+    <div class="d-flex justify-content-between flex-wrap gap-3">
+      <div>
+        <strong>Order #{{ order.id }}</strong>
+        <span class="badge bg-secondary ms-2">{{ order.status }}</span>
+        <p class="mb-0 text-muted small">{{ order.createdAt | date:'medium' }}</p>
+        <p class="mb-0">{{ order.customerName }} — {{ order.addressTitle }}</p>
+      </div>
+      <div class="text-end">
+        <p class="fw-bold mb-2">{{ order.total }} EGP</p>
+        <a [routerLink]="['/orders', order.id]" class="btn btn-sm btn-outline-warning me-2">Details</a>
+        <select class="form-select form-select-sm d-inline-block w-auto"
+          (change)="updateStatus(order.id, $any($event.target).value)">
+          <option value="">Update status</option>
+          @for (status of statuses; track status) {
+          <option class="bg-red" [value]="status">{{ status }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+  } @empty {
+  <p class="text-muted">No assigned orders yet.</p>
+  }
+</div>

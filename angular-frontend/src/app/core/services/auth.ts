@@ -34,15 +34,18 @@ export class AuthService {
         );
     }
     registerDriver(dto: RegisterDriverRequest) {
-        return this.http.post<AuthResponse>(`${this.apiUrl}/register-driver`, dto).pipe(
-            tap(res => this.setSession(res))
-        );
+        return this.http.post<{ message: string }>(`${this.apiUrl}/register-driver`, dto);
     }
     logout(): void {
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
         this.currentUser.set(null);
         this.router.navigate(['/auth/login']);
+    }
+    updateStoredUser(patch: Partial<AuthResponse>): void {
+        const current = this.currentUser();
+        if (!current) return;
+        this.setSession({ ...current, ...patch });
     }
     getToken(): string | null {
         return localStorage.getItem(TOKEN_KEY);
